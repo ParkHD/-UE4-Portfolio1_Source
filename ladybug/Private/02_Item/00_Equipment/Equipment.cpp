@@ -11,6 +11,7 @@ UEquipment::UEquipment()
 
 void UEquipment::ItemStatSetUp()
 {
+	// DataTable에서 아이템 정보를 가져와 범위 내에 랜덤하게 능력치 설정
 	auto itemInfo = GetItemInfo<FEquipmentInformation>();
 	if (itemInfo != nullptr)
 	{

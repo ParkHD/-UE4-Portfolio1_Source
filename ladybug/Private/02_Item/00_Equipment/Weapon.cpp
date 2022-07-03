@@ -9,6 +9,7 @@
 
 void UWeapon::UseItem(class APlayerCharacter* player)
 {
+	// 장착한 무기 해제 후 새로운 무기 장착
 	if(!player->GetEquipmentComponent()->IsWeaponListFull())
 	{
 		player->GetInventoryComponent()->RemoveItem(this);
@@ -18,6 +19,7 @@ void UWeapon::UseItem(class APlayerCharacter* player)
 
 void UWeapon::UseItem(AWorldPlayerCharacter* player)
 {
+	// 장착한 무기 해제 후 새로운 무기 장착
 	if (!player->GetEquipmentComponent()->IsWeaponListFull())
 	{
 		player->GetInventoryComponent()->RemoveItem(this);

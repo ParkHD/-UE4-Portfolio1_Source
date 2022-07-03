@@ -18,6 +18,7 @@ void AExplodeProjectileActor::OnComponentBeginOverlapEvent(UPrimitiveComponent* 
 {
 	if(hitParticle != nullptr)
 	{
+		// Overlap이 자신의 팀은 무시할 것인지 or 팀 상관없이 다 overlap할 것인지
 		bool condition = true;
 		ABaseCharacter* owner = Cast<ABaseCharacter>(GetOwner());
 		if (OtherActor->IsA<ABaseCharacter>())
@@ -28,15 +29,16 @@ void AExplodeProjectileActor::OnComponentBeginOverlapEvent(UPrimitiveComponent* 
 		
 		if(OtherActor != GetOwner() && condition)
 		{
+			// 터지는 파티클 생성
 			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), hitParticle, SweepResult.Location, FRotator::ZeroRotator, true);
 
+			// 대미지를 줄 범위 콜리전 설정
 			FVector start = SweepResult.Location;
 			FVector end = start + SweepResult.Location.UpVector * radius / 4;
 			TArray<TEnumAsByte<EObjectTypeQuery>> objects;
 			objects.Emplace(UEngineTypes::ConvertToObjectType(ECC_GameTraceChannel9));
 			TArray<AActor*> ignoreActors;
 			ignoreActors.Emplace(GetOwner());
-
 			TArray<FHitResult> hits;
 			if (UKismetSystemLibrary::SphereTraceMultiForObjects(
 				GetWorld(),
@@ -52,6 +54,7 @@ void AExplodeProjectileActor::OnComponentBeginOverlapEvent(UPrimitiveComponent* 
 			))
 			{
 				float ownerDamage = owner->GetStatusComponent()->GetStat().Damage;
+				// hit된 Actor들 대미지 주기
 				for (auto hit : hits)
 				{
 					if (owner->AddHitActors(hit.GetActor()))
@@ -59,8 +62,6 @@ void AExplodeProjectileActor::OnComponentBeginOverlapEvent(UPrimitiveComponent* 
 						EDamageType damageType = isSkill ? EDamageType::SKILL : EDamageType::NORMAL;
 						Cast<ABaseCharacter>(hit.GetActor())->TakeDamageType(damageType,
 							ownerDamage, FDamageEvent(), owner->GetController(), owner);
-
-
 					}
 				}
 				owner->ClearHitActors();

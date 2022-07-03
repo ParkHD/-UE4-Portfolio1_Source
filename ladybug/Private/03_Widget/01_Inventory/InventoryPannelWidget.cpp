@@ -14,6 +14,7 @@ void UInventoryPannelWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	// 유니폼그리드패널에서 슬롯들을 가져오고 슬롯 인덱스 설정한다.
 	auto GridChildren = UniformGridPanel_Buttons->GetAllChildren();
 	for (int i = 0; i < GridChildren.Num(); i++)
 	{

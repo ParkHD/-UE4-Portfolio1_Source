@@ -6,9 +6,7 @@
 #include "Animation/AnimInstance.h"
 #include "WorldMonsterAnimInstance.generated.h"
 
-/**
- * 
- */
+// AI's WorldCharacter's AnimInstance
 UCLASS()
 class LADYBUG_API UWorldMonsterAnimInstance : public UAnimInstance
 {
@@ -19,7 +17,8 @@ protected:
 
 protected:
 	UPROPERTY()
-		class AWorldBaseCharacter* owner;
+		class AWorldBaseCharacter* owner;	// owner
+
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
-		float Speed;
+		float Speed;		// 이동 속도
 };

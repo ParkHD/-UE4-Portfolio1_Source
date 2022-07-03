@@ -16,6 +16,7 @@ AWorldMonAIController::AWorldMonAIController()
 	// 기본제공 AIPerceptionComponent
 	PerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerceptionComponent"));
 
+	// 시야로 적 탐지
 	UAISenseConfig_Sight* sightConfig;
 	sightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("AISenseConfig_Sight"));
 	sightConfig->SightRadius = 1200.f;
@@ -58,7 +59,7 @@ void AWorldMonAIController::OnActorPerceptionUpdatedEvent(AActor* Actor, FAIStim
 {
 	if (Stimulus.WasSuccessfullySensed())
 	{
-
+		// 탐지된 타겟이 Player인지 확인
 		AWorldPlayerCharacter* target = Cast<AWorldPlayerCharacter>(Actor);
 		if (target != nullptr)
 		{

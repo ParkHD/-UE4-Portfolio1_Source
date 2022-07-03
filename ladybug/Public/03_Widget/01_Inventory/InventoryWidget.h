@@ -6,9 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "InventoryWidget.generated.h"
 
-/**
- * 
- */
+// 전체 인벤토리를 관리하는 위젯
 UCLASS()
 class LADYBUG_API UInventoryWidget : public UUserWidget
 {

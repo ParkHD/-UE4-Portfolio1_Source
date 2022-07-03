@@ -15,16 +15,16 @@ class LADYBUG_API UFireBallSkill : public USKillBase
 	GENERATED_BODY()
 protected:
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<class AProjectileActor> fireBall;
+		TSubclassOf<class AProjectileActor> fireBall;	// 날아갈 Actor
 	UPROPERTY(EditAnywhere)
-		FName spawnSocketName;
+		FName spawnSocketName;							// 스폰될 위치(소켓)
 	UPROPERTY(EditAnywhere)
-		float projectileSpeed;
+		float projectileSpeed;							// 날아갈 속도
 	UPROPERTY(EditAnywhere)
-		float spawnTime = 0.f;
+		float spawnTime = 0.f;							// 스폰될 시간
 
 protected:
-	virtual void ActivateSkill() override;
+	virtual void ActivateSkill() override;				// 스킬 실행
 
-	void SpawnFireBall();
+	void SpawnFireBall();								// fireball 소환	
 };

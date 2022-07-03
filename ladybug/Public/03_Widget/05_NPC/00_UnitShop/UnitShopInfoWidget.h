@@ -6,14 +6,13 @@
 #include "Blueprint/UserWidget.h"
 #include "UnitShopInfoWidget.generated.h"
 
-/**
- * 
- */
+// 유닛장점에 유닛의 정보를 나타낼 위젯
 UCLASS()
 class LADYBUG_API UUnitShopInfoWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
+	// 유닛 정보
 	UPROPERTY()
 		class UTextBlock* TextBlock_UnitDecription;
 	UPROPERTY()
@@ -30,8 +29,9 @@ class LADYBUG_API UUnitShopInfoWidget : public UUserWidget
 		class UTextBlock* TextBlock_Skill;
 
 public:
+	// 유닛 정보창 업데이트
 	UFUNCTION()
 		void SetUp(class UArmyListSlotWidget* selectedSlot);
 
-	void Init();
+	void Init();	// 위젯 초기화
 };

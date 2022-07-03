@@ -6,8 +6,8 @@
 #include "BehaviorTree/BTTaskNode.h"
 #include "Task_Attack.generated.h"
 
-/**
- * 
+/*
+ * 기본공격 하는 Task
  */
 UCLASS()
 class LADYBUG_API UTask_Attack : public UBTTaskNode

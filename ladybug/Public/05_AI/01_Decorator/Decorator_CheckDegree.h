@@ -7,7 +7,7 @@
 #include "Decorator_CheckDegree.generated.h"
 
 /**
- * 
+ * 타겟과의 각도를 구한다.
  */
 UCLASS()
 class LADYBUG_API UDecorator_CheckDegree : public UBTDecorator
@@ -20,7 +20,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 		struct FBlackboardKeySelector BlackBoardKey;
 	UPROPERTY(EditAnywhere)
-		float attackRange;
+		float attackRange;		// 공격범위(각도)
 
 public:
 	FName GetSelectedBlackboardKey() const;

@@ -13,7 +13,7 @@ void UUnitShopInfoWidget::SetUp(class UArmyListSlotWidget* selectedSlot)
 	if (selectedSlot != nullptr)
 	{
 		Init();
-
+		// 슬롯에 있는 유닛의 정보를 가지고 위젯 업데이트
 		const FMonsterInfo* monsterInfo = selectedSlot->GetUnit()->GetMonsterInfo();
 		if (monsterInfo != nullptr)
 		{

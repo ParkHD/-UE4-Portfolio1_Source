@@ -8,7 +8,7 @@
 #include "WorldMonAIController.generated.h"
 
 /**
- * 
+ * AI's WorldCharacter's Controller
  */
 UCLASS()
 class LADYBUG_API AWorldMonAIController : public AAIController
@@ -23,5 +23,5 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 public:
 	UFUNCTION()
-		void OnActorPerceptionUpdatedEvent(AActor* Actor, FAIStimulus Stimulus);
+		void OnActorPerceptionUpdatedEvent(AActor* Actor, FAIStimulus Stimulus);	// AI Àû Å½Áö
 };

@@ -6,9 +6,8 @@
 #include "Animation/AnimNotifies/AnimNotify.h"
 #include "ProjectileActorSpawnNotify.generated.h"
 
-/**
- * 
- */
+// 사용보류!!!
+// 프로젝타일 액터 소환 및 발사 Notify
 UCLASS()
 class LADYBUG_API UProjectileActorSpawnNotify : public UAnimNotify
 {
@@ -18,9 +17,9 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<class AActor> actorToSpawn;
+		TSubclassOf<class AActor> actorToSpawn;	// 스폰할 Actor
+	UPROPERTY(EditAnywhere)	
+		FName spawnSocketName;					// 스폰 할 위치
 	UPROPERTY(EditAnywhere)
-		FName spawnSocketName;
-	UPROPERTY(EditAnywhere)
-		float projectileSpeed;
+		float projectileSpeed;					// projectileActor 스피드
 };

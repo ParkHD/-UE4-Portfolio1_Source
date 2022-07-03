@@ -18,6 +18,7 @@ void UInventoryButtonWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	// 툴팁 만들고 숨기기
 	if (tooltip == nullptr)
 	{
 		tooltip = CreateWidget<UItemInfoWidget>(this, tooltipWidgetClass);
@@ -76,6 +77,7 @@ FReply UInventoryButtonWidget::NativeOnMouseButtonDoubleClick(const FGeometry& I
 		{
 			InventoryComponent = GetOwningPlayerPawn<AWorldPlayerCharacter>()->GetInventoryComponent();
 		}
+		// 아이템 사용
 		InventoryComponent->UseItem(itemIndex);
 	}
 	return FReply::Handled(); // 정상처리
@@ -131,6 +133,7 @@ void UInventoryButtonWidget::SetUpButton(UItem* item)
 			}
 			tooltip->SetUp(item);
 		}
+		// 툴팁이 나오게설정
 		ToolTipWidget->SetVisibility(ESlateVisibility::Visible);
 
 		isEmpty = false;
@@ -139,6 +142,7 @@ void UInventoryButtonWidget::SetUpButton(UItem* item)
 	else
 	{
 		Init();
+		// 툴팁이 안 나오게 설정
 		ToolTipWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 }

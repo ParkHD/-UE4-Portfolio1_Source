@@ -27,12 +27,13 @@ void AWorldPlayerController::OnPossess(APawn* aPawn)
 		if (mainWidget != nullptr)
 		{
 			mainWidget->AddToViewport();
+			// 함수바인딩
+			// 인벤토리 업데이트
 			ownerPlayer->GetInventoryComponent()->OnUpdateInven.AddUniqueDynamic(mainWidget->GetUMG_Inventory(), &UEquipInventoryWidget::UpdateInventory);
+			// 장비창 업데이트
 			ownerPlayer->GetEquipmentComponent()->OnUpdateEquiment.AddUniqueDynamic(mainWidget->GetUMG_Inventory(), &UEquipInventoryWidget::UpdateEquipment);
+			// 스텟창 업데이트
 			ownerPlayer->GetEquipmentComponent()->OnChangeEquipment.AddUniqueDynamic(mainWidget->GetUMG_Inventory(), &UEquipInventoryWidget::UpdateStatInfo);
-
-
-
 			ownerPlayer->GetEquipmentComponent()->OnChangeEquipment.Broadcast(ownerPlayer->GetStatusComponent());
 		}
 	}
@@ -41,7 +42,6 @@ void AWorldPlayerController::OnPossess(APawn* aPawn)
 void AWorldPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
-
 }
 
 void AWorldPlayerController::OpenInventoryWidget()
@@ -67,7 +67,7 @@ void AWorldPlayerController::OpenArmyManagerWidget()
 		if (umg_ArmyManager->GetVisibility() == ESlateVisibility::Hidden)
 		{
 			umg_ArmyManager->SetVisibility(ESlateVisibility::Visible);
-			umg_ArmyManager->Update(ownerPlayer->GetArmyComponent()->GetArmyList());
+			umg_ArmyManager->Update(ownerPlayer->GetArmyComponent()->GetArmyList());	// 부대관리 창 업데이트
 		}
 		else if (umg_ArmyManager->GetVisibility() == ESlateVisibility::Visible)
 		{
@@ -82,7 +82,7 @@ void AWorldPlayerController::OpenBattleWidget(class AWorldMonsterCharacter* targ
 	{
 		if (umg_BattleWidget->GetVisibility() == ESlateVisibility::Hidden)
 		{
-			umg_BattleWidget->SetUp(GetPawn<AWorldPlayerCharacter>(), target);
+			umg_BattleWidget->SetUp(GetPawn<AWorldPlayerCharacter>(), target);		// 전투진입 창 업데이트
 			umg_BattleWidget->SetVisibility(ESlateVisibility::Visible);
 		}
 		else if (umg_BattleWidget->GetVisibility() == ESlateVisibility::Visible)
@@ -99,7 +99,7 @@ void AWorldPlayerController::OpenVillageWidget(AVillageWorldActor* village)
 	{
 		if (umg_VillageWidget->GetVisibility() == ESlateVisibility::Hidden)
 		{
-			umg_VillageWidget->SetUp(village->GetVillageTagName());
+			umg_VillageWidget->SetUp(village->GetVillageTagName());				// 마을진입 창 업데이트
 			umg_VillageWidget->SetVisibility(ESlateVisibility::Visible);
 		}
 	}

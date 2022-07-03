@@ -8,8 +8,8 @@
 
 #include "BTTask_SetMoveState.generated.h"
 
-/**
- * 
+/*
+ * MoveState(walk, run, fly..)변경하는 Task
  */
 UCLASS()
 class LADYBUG_API UBTTask_SetMoveState : public UBTTask_BlackboardBase

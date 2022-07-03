@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "ProjectileActor.generated.h"
 
+// 날라가면서 대미지를 주는 Actor(화살, fireball ...)
 UCLASS()
 class LADYBUG_API AProjectileActor : public AActor
 {
@@ -25,45 +26,45 @@ public:
 	virtual void Tick(float DeltaTime) override;
 protected:
 	UPROPERTY(EditAnywhere)
-		class UCapsuleComponent* sphereComponent;
+		class UCapsuleComponent* sphereComponent;					// 공격 반응을 할 콜리전
 	UPROPERTY(EditAnywhere)
-		class UParticleSystemComponent* particleComponent;
+		class UParticleSystemComponent* particleComponent;			// 효과
 	UPROPERTY(EditAnywhere)
-		class USkeletalMeshComponent* skeletalMeshComponent;
+		class USkeletalMeshComponent* skeletalMeshComponent;		
 	UPROPERTY(EditAnywhere)
 		class UProjectileMovementComponent* projectileComponent;
 	UPROPERTY(EditAnywhere)
-		class UAudioComponent* audioComponent;
+		class UAudioComponent* audioComponent;						// 사운드
 
 public:
 	class UProjectileMovementComponent* GetProjectileComponent() { return projectileComponent; }
 
 protected:
 	UPROPERTY(EditAnywhere)
-		class UParticleSystem* hitParticle;
+		class UParticleSystem* hitParticle;		// overlap반응 시 터지는 효과
 
 	UPROPERTY(EditAnywhere)
-		bool bAttachToTarget = true;
+		bool bAttachToTarget = true;		// overlap 시 타겟에 붙을 것인가
 	UPROPERTY(EditAnywhere)
-		bool bHitSingle = true;
+		bool bHitSingle = true;				// 하나의 대상에만 대미지를 줄 것인가
 	UPROPERTY(EditAnywhere)
-		bool bLifeSpan = true;
+		bool bLifeSpan = true;				// 생명주기 설정
 	UPROPERTY(EditAnywhere, meta = (EditCondition = "bLifeSpan == true"))
-		float lifeSpanValue;
+		float lifeSpanValue;				// 생명주기 값 설정
 
 	UPROPERTY(EditAnywhere)
-		float skillDamage;
+		float skillDamage;					// 대미지
 	UPROPERTY(EditAnywhere)
-		bool isSkill = false;
+		bool isSkill = false;				// 스킬공격인가?(스킬 or 기본화살)
 	UPROPERTY(EditAnywhere)
-		bool bIgnoreMyTeam = false;
+		bool bIgnoreMyTeam = false;			// 내 팀은 무시하고 지나갈 것인가
 	UPROPERTY()
-		TArray<class AActor*> hitActors;
+		TArray<class AActor*> hitActors;	// 대미지를 받은 ActorList
 public:
 	UFUNCTION()
 		virtual void OnComponentBeginOverlapEvent(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 public:
 	void TurnOnCollision(bool bTurn);
-	void SetSkillDamage(float damage) { skillDamage = damage; }
+	void SetSkillDamage(float damage) { skillDamage = damage; }	// 대미지 설정
 };
 

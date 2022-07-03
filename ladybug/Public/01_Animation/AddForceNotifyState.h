@@ -6,26 +6,24 @@
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "AddForceNotifyState.generated.h"
 
-/**
- * 
- */
-
+// 캐릭터가 움직일 방향
 UENUM(BlueprintType)
 enum class EForceDir : uint8
 {
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT,
-	FORWARD,
-	BACKWARD
+	UP,			// 위
+	DOWN,		// 아래
+	LEFT,		// 왼쪽
+	RIGHT,		// 오른쪽
+	FORWARD,	// 앞
+	BACKWARD	// 뒤
 };
+
+// 캐릭터의 위치 이동 
 UCLASS()
 class LADYBUG_API UAddForceNotifyState : public UAnimNotifyState
 {
 	GENERATED_BODY()
-
-
+		
 protected:
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration)override;
 	virtual void NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime)override;
@@ -33,10 +31,11 @@ protected:
 
 protected:
 	UPROPERTY()
-	class ABaseCharacter* owner;
+	class ABaseCharacter* owner;	// owner
+
 	UPROPERTY(EditAnywhere)
-	EForceDir forceDir;
+	EForceDir forceDir;				// 캐릭터 이동할 방향
 	UPROPERTY(EditAnywhere)
-	float force;
+	float force;					// 캐릭터 이동 속도
 
 };

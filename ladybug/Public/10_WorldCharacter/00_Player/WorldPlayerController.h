@@ -7,7 +7,7 @@
 #include "WorldPlayerController.generated.h"
 
 /**
- * 
+ * Players's WorldCharacter's Controller
  */
 UCLASS()
 class LADYBUG_API AWorldPlayerController : public APlayerController
@@ -21,15 +21,14 @@ protected:
 protected:
 	UPROPERTY()
 		class AWorldPlayerCharacter* ownerPlayer;
-	// 블루프린트 클래스를 받아올 변수
+	
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<class UMainWidget> mainWidgetClass;
+		TSubclassOf<class UMainWidget> mainWidgetClass;		// 블루프린트 클래스를 받아올 변수
 	UPROPERTY(BlueprintReadOnly)
 		class UMainWidget* mainWidget;
 public:
-	// 인벤토리 visibility 키는 함수
-	void OpenInventoryWidget();
-	void OpenArmyManagerWidget();
-	void OpenBattleWidget(class AWorldMonsterCharacter* target);
-	void OpenVillageWidget(class AVillageWorldActor* village);
+	void OpenInventoryWidget();		// 인벤토리 열기
+	void OpenArmyManagerWidget();	// 부대관리창 열기
+	void OpenBattleWidget(class AWorldMonsterCharacter* target);	// 전투진입 창 열기
+	void OpenVillageWidget(class AVillageWorldActor* village);		// 마을진입 창 열기
 };

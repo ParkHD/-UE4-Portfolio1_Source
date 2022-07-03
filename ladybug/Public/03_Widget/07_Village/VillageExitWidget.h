@@ -6,9 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "VillageExitWidget.generated.h"
 
-/**
- * 
- */
+// 마을나가기 위젯
 UCLASS()
 class LADYBUG_API UVillageExitWidget : public UUserWidget
 {
@@ -17,15 +15,15 @@ protected:
 	virtual void NativeConstruct() override;
 protected:
 	UPROPERTY(meta = (BindWidget))
-		class UButton* Button_ExitVillage;
+		class UButton* Button_ExitVillage;	// 마을 나가기 버튼
 	UPROPERTY(meta = (BindWidget))
-		class UButton* Button_Exit;
+		class UButton* Button_Exit;			// 취소 버튼
 
 protected:
 	UFUNCTION()
-		void OnClickExitVillageButton();
+		void OnClickExitVillageButton();		// 마을 나가기 함수
 	UFUNCTION()
-		void OnClickExitButton();
+		void OnClickExitButton();				// 취소 함수
 	UFUNCTION()
 		void OnVisibilityChangeEvent(ESlateVisibility visible);
 };

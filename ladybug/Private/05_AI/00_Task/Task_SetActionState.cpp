@@ -10,9 +10,11 @@ EBTNodeResult::Type UTask_SetActionState::ExecuteTask(UBehaviorTreeComponent& Ow
 {
 	if (bRand)
 	{
+		// ActionState를 랜덤하게 받아온다.
 		int32 randValue = FMath::RandRange(0, (int32)EActionState::MAX - 1);
 		AIActionState = (EActionState)randValue;
 	}
+	// 블랙보드 값에 저장한다.
 	OwnerComp.GetBlackboardComponent()->SetValueAsEnum(GetSelectedBlackboardKey(), (uint8)AIActionState);
 
 	AMonsterBaseCharacter* owner = Cast<AMonsterBaseCharacter>(OwnerComp.GetAIOwner()->GetPawn());

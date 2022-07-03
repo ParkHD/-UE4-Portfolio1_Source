@@ -7,9 +7,9 @@
 #include "GameplayTagContainer.h"
 #include "NotifyState_ShootProjectileActor.generated.h"
 
-/**
- * 
- */
+// ProjectileActor Spawn NotifyState
+// 프로젝타일 액터를 스폰하고 일정 시간 후에 발사한다.
+// 스킬 전용
 UCLASS()
 class LADYBUG_API UNotifyState_ShootProjectileActor : public UAnimNotifyState
 {
@@ -21,20 +21,23 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere)
-		FGameplayTag skill_Tag;
+		FGameplayTag skill_Tag;			// 어떤 스킬인지 스킬태그
 
-	class ABaseCharacter* owner;
+	class ABaseCharacter* owner;		// owner
 
+	// 스폰할 Actor 설정
 	UPROPERTY(EditAnywhere)
-		FRotator spawnRotation;
+		TSubclassOf<class AActor> ActorToSpawn;	// 스폰할 ActorBP
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<class AActor> ActorToSpawn;
+		FRotator spawnRotation;					// 스폰할 회전값
 	UPROPERTY(EditAnywhere)
-		FName spawnSocketName;
+		FName spawnSocketName;					// 스폰할 위치 : 소켓
 	UPROPERTY(EditAnywhere)
-		float projectileSpeed;
+		float projectileSpeed;					// projectileActor 속도
+
 	UPROPERTY(VisibleAnywhere)
-		class AProjectileActor* projectileActor;
+		class AProjectileActor* projectileActor;	// 소환된 projectileActor
 public:
+	// 발사할 방향 구하는 함수
 	FVector GetShotDir(class ABaseCharacter* characterOwner);
 };

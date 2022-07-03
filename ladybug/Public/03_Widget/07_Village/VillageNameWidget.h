@@ -6,9 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "VillageNameWidget.generated.h"
 
-/**
- * 
- */
+// WorldLevel에서 마을 이름 위젯
 UCLASS()
 class LADYBUG_API UVillageNameWidget : public UUserWidget
 {
@@ -16,7 +14,7 @@ class LADYBUG_API UVillageNameWidget : public UUserWidget
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-		class UTextBlock* TextBlock_VillageName;
+		class UTextBlock* TextBlock_VillageName;	// 마을 이름
 public:
-	void SetUp(FString villageName);
+	void SetUp(FString villageName);		// 마을 이름 TEXT설정
 };

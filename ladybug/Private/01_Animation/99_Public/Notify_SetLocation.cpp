@@ -12,6 +12,7 @@ void UNotify_SetLocation::Notify(USkeletalMeshComponent* MeshComp, UAnimSequence
 		auto owner = MeshComp->GetOwner();
 		if(owner != nullptr)
 		{
+			// 정면으로 Value만큼 위치이동
 			auto newLocation = owner->GetActorLocation();
 			newLocation.X = owner->GetActorForwardVector().X * value;
 			owner->SetActorLocation(newLocation);

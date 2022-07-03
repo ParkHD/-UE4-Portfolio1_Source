@@ -6,9 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "StatInfoWidget.generated.h"
 
-/**
- * 
- */
+// 캐릭터 스텟 나타낼 위젯
 UCLASS()
 class LADYBUG_API UStatInfoWidget : public UUserWidget
 {
@@ -27,8 +25,10 @@ protected:
 protected:
 	virtual void NativeConstruct() override;
 public:
+	// 스텟 창 업데이트
 	UFUNCTION()
 		void Update(class UStatusComponent* StatComp);
 
+	// 스텟 창 초기화
 	void Init();
 };

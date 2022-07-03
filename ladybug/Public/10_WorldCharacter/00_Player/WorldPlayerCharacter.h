@@ -7,7 +7,7 @@
 #include "WorldPlayerCharacter.generated.h"
 
 /**
- * 
+ * Player's WorldCharacter
  */
 UCLASS()
 class LADYBUG_API AWorldPlayerCharacter : public AWorldBaseCharacter
@@ -39,39 +39,39 @@ protected:
 		class UAudioComponent* AudioComponent;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
-		class UNiagaraComponent* clickNiagaraComponent;
+		class UNiagaraComponent* clickNiagaraComponent;	// 클릭 Particle 관리 컴포넌트
 public:
 	class UInventoryComponent* GetInventoryComponent() { return InventoryComponent; }
 protected:
-	//UPROPERTY(EditAnywhere)
-	//	class UParticleSystem* clickParticle;
 	UPROPERTY(EditAnywhere)
-		class UNiagaraSystem* clickParticle;
-	bool bClickRotate = false;
+		class UNiagaraSystem* clickParticle;			// 마우스 클릭시 나올 Particle
+
+	bool bClickRotate = false;		// 카메라 회전 가능한가?	
 	UPROPERTY(EditAnywhere)
-		float speed = 10.f;
+		float speed = 10.f;			// 카메라 줌 속도
 	UPROPERTY(VisibleAnywhere)
 		class AWorldPlayerController* playerController;
 protected:
-	void ReleaseMove();
-	void PressRotate();
+	void ReleaseMove();							// 캐릭터 이동
+	void PressRotate();							// 카메라 회전 클릭
 	void ReleaseRotate();
 
-	void RotateCamera(float newAxisValue);
-	void ZoomCamera(float newAxisValue);
+	void RotateCamera(float newAxisValue);		// 카메라 회전
+	void ZoomCamera(float newAxisValue);		// 카메라 줌
 
-	void PressInventoryKey();
-	void PressArmyManagerKey();
+	void PressInventoryKey();					// 인벤토리 열기
+	void PressArmyManagerKey();					// 부대관리창 열기
 protected:
 	UFUNCTION()
 		void OnActorBeginOverlapEvent(AActor* OverlappedActor, AActor* OtherActor);
 public:
+	// 저장된 캐릭터 데이터 덮어쓰기
 	virtual void SetCharacterData(FSaveCharacterData CharacterData)override;
 
 
 
 
-	//test
+	// test -> 에디터에서 입력받은 아이템 인벤토리에 넣어놓기
 protected:
 	UPROPERTY(EditAnywhere)
 		TArray<TSubclassOf<class UItem>> itemListBP;

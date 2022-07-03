@@ -6,9 +6,8 @@
 #include "Animation/AnimNotifies/AnimNotify.h"
 #include "StartJumpAnimNotify.generated.h"
 
-/**
- * 
- */
+// 사용안함 -> NotifyState_SetActionState로 통합
+// 점프 시 MoveState 설정
 UCLASS()
 class LADYBUG_API UStartJumpAnimNotify : public UAnimNotify
 {

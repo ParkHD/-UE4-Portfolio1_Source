@@ -17,7 +17,6 @@ UStatusComponent::UStatusComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
 	
 }
 
@@ -26,13 +25,11 @@ UStatusComponent::UStatusComponent()
 void UStatusComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	player = GetOwner<ABaseCharacter>();
+	
 	if(GetOwner()->IsA<AWorldBaseCharacter>())
-	{
 		owningCharacter = GetOwner<AWorldBaseCharacter>();
-	}
+	else if(GetOwner()->IsA<ABaseCharacter>())
+		player = GetOwner<ABaseCharacter>();
 }
 
 
@@ -40,54 +37,43 @@ void UStatusComponent::BeginPlay()
 void UStatusComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
- 
+
+	// 캐릭터의 Move상태에 따라서 스태미너 변동
 	if(player != nullptr)
 	{
 		switch (player->GetMoveState())
 		{
 		case EMoveState::NORMAL:
+			// 일반 상태이면 스태미너 회복
 			AddStamina(5 * DeltaTime);
 			break;
+
 		case EMoveState::RUN:
+			// 뛰고있으면 스태미너 감소
 			if (CheckStamina(10.f))
-			{
 				AddStamina(-10 * DeltaTime);
-			}
+			// 충분한 스태미너 없으면 일반 상태로 변경 -> 달리기 멈추기
 			else
-			{
 				player->SetMoveState(EMoveState::NORMAL);
-			}
 			break;
+			
 		case EMoveState::FLY:
+			// 날고 있으면 스태미너 감소
 			if (CheckStamina(10.f))
-			{
 				AddStamina(-10 * DeltaTime);
-			}
+			// 충분한 스태미너 없으면 일반 상태로 변경 -> 날기 멈추기
 			else
-			{
 				player->SetMoveState(EMoveState::NORMAL);
-			}
 			break;
 		}
-
-		/*if(IsContainState(EHitState::STUN))
-		{
-			
-		}*/
 	}
-	
 }
 
-//void UStatusComponent::AddCharacterState(EHitState State)
-//{
-//	CharacterState.AddUnique(State);
-//}
 
 void UStatusComponent::Init()
 {
 	currentHP = CharacterStat.MaxHP;
 	currentMP = 0.f;
-
 	currentSP = CharacterStat.MaxSP;
 }
 
@@ -104,11 +90,14 @@ void UStatusComponent::MinusStat(FStat stat)
 void UStatusComponent::AddHP(float value)
 {
 	currentHP = FMath::Clamp(currentHP + value, 0.f, CharacterStat.MaxHP);
-	OnChangeHP.Broadcast(this);
+
+	// Player : Status Widget 업데이트 
+	// Monster : HPBar 업데이트
+	OnChangeHP.Broadcast(this);	
+
+	// Dead Event
 	if (currentHP <= 0)
-	{
 		Cast<ABaseCharacter>(GetOwner())->OnDead.Broadcast();
-	}
 }
 
 bool UStatusComponent::CheckHP(float value)
@@ -119,7 +108,12 @@ bool UStatusComponent::CheckHP(float value)
 void UStatusComponent::AddStamina(float value)
 {
 	currentSP = FMath::Clamp(currentSP + value, 0.f, CharacterStat.MaxSP);
+
+	// Player : Status Widget 업데이트
 	OnChangeSP.Broadcast(this);
+
+	// AI전용
+	// AI는 Stamina 변동 될 때마다 블랙보드 업데이트
 	if(player->IsA<AMonsterBaseCharacter>())
 	{
 		auto aiController = player->GetController<AMonsterAIController>();
@@ -129,10 +123,6 @@ void UStatusComponent::AddStamina(float value)
 			{
 				aiController->GetBlackboardComponent()->SetValueAsFloat("Stamina", currentSP);
 			}
-			//auto stamina = aiController->GetBlackboardComponent()->GetValueAsFloat("Stamina");
-			//UE_LOG(LogTemp, Log, TEXT("stamina : %f"), stamina);
-
-			//aiController->GetBlackboardComponent()->SetValueAsFloat("Stamina", currentSP);
 		}
 	}
 }
@@ -144,6 +134,7 @@ bool UStatusComponent::CheckStamina(float value)
 void UStatusComponent::AddMP(float value)
 {
 	currentMP = FMath::Clamp(currentMP + value, 0.f, CharacterStat.MaxMP);
+	// Player : Status Widget 업데이트
 	OnChangeMP.Broadcast(this);
 }
 
@@ -152,21 +143,24 @@ bool UStatusComponent::CheckMP(float value)
 	return currentMP >= value;
 }
 
-
+void UStatusComponent::AddDamage(float value)
+{
+	CharacterStat.Damage += value;
+}
 void UStatusComponent::SetStatusComponentData(FStatusComponentSave Data)
 {
 	CharacterStat = Data.CharacterStat;
 	GetOwner<AWorldBaseCharacter>()->GetEquipmentComponent()->OnChangeEquipment.Broadcast(this);
 }
 
-void UStatusComponent::SetBattleCharacter(UStatusComponent* StatComp)
+void UStatusComponent::SetBattleCharacterStat(UStatusComponent* StatComp)
 {
 	CharacterStat = StatComp->GetStat();
 
 	Init();
 }
 
-void UStatusComponent::SetBattelCharacter(FStat stat)
+void UStatusComponent::SetBattleCharacterStat(FStat stat)
 {
 	CharacterStat = stat;
 	Init();

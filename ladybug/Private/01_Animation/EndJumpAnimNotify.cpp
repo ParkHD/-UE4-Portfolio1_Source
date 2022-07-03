@@ -6,6 +6,7 @@
 
 void UEndJumpAnimNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
+	// 착지 했을 때 딜레이
 	APlayerCharacter* player = Cast<APlayerCharacter>(MeshComp->GetOwner());
 	if (player != nullptr)
 	{

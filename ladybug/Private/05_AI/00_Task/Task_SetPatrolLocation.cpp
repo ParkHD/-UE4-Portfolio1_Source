@@ -16,11 +16,14 @@ EBTNodeResult::Type UTask_SetPatrolLocation::ExecuteTask(UBehaviorTreeComponent&
 	{
 		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 	}
+
+	// AI가 스폰된 자리를 기준으로 원을 만들고 그 원안에 랜덤한 위치를 순찰위치로 설정
 	FVector center = owner->GetSpawnLocation();
 	float patrolX = FMath::RandRange(center.X - patrolRadius, center.X + patrolRadius);
 	float patrolY = FMath::RandRange(center.Y - patrolRadius, center.Y + patrolRadius);
 	FVector patrolVector = FVector(patrolX, patrolY, center.Z);
 
+	// 순찰위치 블랙보드 값에 저장
 	OwnerComp.GetBlackboardComponent()->SetValueAsVector("PatrolLocation", patrolVector);
 
 	return EBTNodeResult::Succeeded;

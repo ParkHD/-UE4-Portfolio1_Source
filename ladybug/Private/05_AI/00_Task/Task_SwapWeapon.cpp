@@ -24,12 +24,15 @@ EBTNodeResult::Type UTask_SwapWeapon::ExecuteTask(UBehaviorTreeComponent& OwnerC
 		return EBTNodeResult::Failed;
 	}
 
+	// 입력받은 공격타입에 따라 근거리 또는 원거리 무기 장착
 	if(attackTypeToSwap == EAttackType::Melee)
 	{
+		// 근거리무기 장착
 		owner->GetEquipmentComponent()->EquipMeleeWeapon();
 	}
 	else if (attackTypeToSwap == EAttackType::Range)
 	{
+		// 원거리무기 장착
 		owner->GetEquipmentComponent()->EquipRangeWeapon();
 	}
 

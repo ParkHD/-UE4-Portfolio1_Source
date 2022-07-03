@@ -17,11 +17,13 @@ void UFireBallSkill::ActivateSkill()
 	{
 		if (skillOwner != nullptr)
 		{
+			// 스킬 몽타주 실행
 			skillOwner->GetMesh()->GetAnimInstance()->Montage_Play(GetSkillInfo()->skill_Montage);
 
 			FTimerHandle spawnFireTimer;
 			FTimerDelegate spawnFireDelegate = FTimerDelegate::CreateUObject(this, &UFireBallSkill::SpawnFireBall);
 
+			// 일정시간후에 fireball을 소환한다 -> 애니메이션 모션 타이밍에 맞게 fireball소환하기 위함
 			skillOwner->GetWorld()->GetTimerManager().SetTimer(spawnFireTimer,
 				spawnFireDelegate,
 				spawnTime,
@@ -48,7 +50,7 @@ void UFireBallSkill::SpawnFireBall()
 				if (projectileActor != nullptr)
 				{
 					AMonsterAIController* controller = skillOwner->GetController<AMonsterAIController>();
-					// 소환 Target(위치) 설정
+					// Target 설정
 					AActor* target = nullptr;
 					// AI라면 블랙보드에서 Target을 가져온다.
 					if (controller != nullptr)
@@ -56,6 +58,7 @@ void UFireBallSkill::SpawnFireBall()
 						target = Cast<AActor>(controller->GetBlackboardComponent()->GetValueAsObject("Target"));
 					}
 
+					// 발사 할 방향 구하기 = 타겟 방향
 					FVector lookAt;
 					if (target != nullptr)
 					{
@@ -66,6 +69,7 @@ void UFireBallSkill::SpawnFireBall()
 					{
 						lookAt = skillOwner->GetMesh()->GetSocketLocation(spawnSocketName).ForwardVector;
 					}
+					// 타겟방향으로 발사
 					projectileActor->GetProjectileComponent()->Velocity = lookAt * projectileSpeed;
 				}
 				else

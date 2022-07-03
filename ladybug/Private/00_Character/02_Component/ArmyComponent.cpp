@@ -18,8 +18,6 @@ UArmyComponent::UArmyComponent()
 void UArmyComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-
 }
 
 
@@ -27,7 +25,6 @@ void UArmyComponent::BeginPlay()
 void UArmyComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
 	// ...
 }
 

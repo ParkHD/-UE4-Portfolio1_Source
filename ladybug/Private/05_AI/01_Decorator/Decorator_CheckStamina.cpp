@@ -21,6 +21,7 @@ bool UDecorator_CheckStamina::CalculateRawConditionValue(UBehaviorTreeComponent&
 	ABaseCharacter* owner = Cast<ABaseCharacter>(obj);
 	if (owner != nullptr)
 	{
+		// 스태미너가 충분히 있는지 확인
 		if (owner->GetStatusComponent()->CheckStamina(stamina))
 		{
 			return true;

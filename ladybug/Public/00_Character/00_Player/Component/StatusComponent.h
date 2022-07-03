@@ -11,13 +11,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeStat, class UStatusComponent*, statComp);
 
 
-//UENUM(BlueprintType)
-//enum class EHitState : uint8 // Enum이름 앞에 E꼭 붙여야함
-//{
-//	STUN,
-//	FIRE,
-//};
-
+// 스텟컴포넌트
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class LADYBUG_API UStatusComponent : public UActorComponent
 {
@@ -40,15 +34,15 @@ protected:
 		class AWorldBaseCharacter* owningCharacter;
 	UPROPERTY()
 		class ABaseCharacter* player;
-	// 캐릭터의 Stat
+
+	// 캐릭터의 능력치
 	UPROPERTY(EditAnywhere)
 		FStat CharacterStat;
-	//UPROPERTY(VisibleAnywhere)
-	//	TArray<EHitState> CharacterState;
 
 	UPROPERTY(EditAnywhere)
 		int32 level = 1;
 
+	// 현재 캐릭터 상태
 	UPROPERTY(EditAnywhere)
 		float currentHP = CharacterStat.MaxHP;
 	UPROPERTY(EditAnywhere)
@@ -57,39 +51,39 @@ protected:
 		float currentSP = CharacterStat.MaxSP;
 public:
 	FStat GetStat() const { return CharacterStat; }
-	float const GetCurrentSP() { return currentSP; }
 	float GetHPRatio() { return currentHP / CharacterStat.MaxHP; }
 	float GetSPRatio() { return currentSP / CharacterStat.MaxSP; }
 	float GetMPRatio() { return currentMP / CharacterStat.MaxMP; }
 
-	float GetCurrentMP() const { return currentMP; }
-//public:
-//	bool IsContainState(EHitState State) { return CharacterState.Contains(State); }
-//	void AddCharacterState(EHitState State);
-//	void RemoveState(EHitState State) { CharacterState.Remove(State); }
+	float const GetCurrentSP() const { return currentSP; }
+	float const GetCurrentMP() const { return currentMP; }
 public:
 	void Init();
 
+	// 스텟 변동(장비 장착)
 	void AddStat(FStat stat);
 	void MinusStat(FStat stat);
 
-
+	// 현재 HP, Stamina, MP 변동
 	void AddHP(float value);
-	bool CheckHP(float value);
-
 	void AddStamina(float value);
-	bool CheckStamina(float value);
-
 	void AddMP(float value);
+	// 스텟 변경
+	void AddDamage(float value);
+	// 충분한 HP, Stamina, MP있는 지 확인
+	bool CheckHP(float value);
+	bool CheckStamina(float value);
 	bool CheckMP(float value);
 public:
+	// StatUI 업데이트
 	FOnChangeStat OnChangeHP;
 	FOnChangeStat OnChangeSP;
 	FOnChangeStat OnChangeMP;
 
 public:
+	// WorldCharacter 전용
 	void SetStatusComponentData(FStatusComponentSave Data);
-	// BattleCharacter 전용
-	void SetBattleCharacter(class UStatusComponent* StatComp);
-	void SetBattelCharacter(FStat stat);
+	// BattleCharacter전용, BattleCharacter의 스텟 SetUp
+	void SetBattleCharacterStat(class UStatusComponent* StatComp);
+	void SetBattleCharacterStat(FStat stat);
 };

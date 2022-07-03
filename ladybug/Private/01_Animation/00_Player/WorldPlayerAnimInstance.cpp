@@ -15,6 +15,7 @@ void UWorldPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
+	// 변수 업데이트
 	if(owner != nullptr)
 	{
 		playerSpeed = owner->GetCharacterMovement()->Velocity.Size();

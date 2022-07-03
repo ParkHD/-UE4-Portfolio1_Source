@@ -8,7 +8,7 @@
 #include "Task_SetAttackState.generated.h"
 
 /**
- * 
+ * AttackState(ready, cooltime...)를 변경하는 Task
  */
 UCLASS()
 class LADYBUG_API UTask_SetAttackState : public UBTTaskNode
@@ -17,7 +17,7 @@ class LADYBUG_API UTask_SetAttackState : public UBTTaskNode
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 protected:
-	UPROPERTY(EditAnywhere, meta = (EditCondition = "bRand == false"))
+	UPROPERTY(EditAnywhere)
 		EAttackState AIAttackState;
 
 };

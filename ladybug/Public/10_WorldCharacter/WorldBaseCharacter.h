@@ -9,6 +9,7 @@
 #include "WorldBaseCharacter.generated.h"
 
 
+// WorldCharacter의 Base class
 UCLASS()
 class LADYBUG_API AWorldBaseCharacter : public ACharacter
 {
@@ -29,11 +30,11 @@ public:
 
 protected:
 	UPROPERTY(VisibleAnywhere)
-		class UStatusComponent* StatusComponent;
+		class UStatusComponent* StatusComponent;		// 능력치 컴포넌트
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = InventoryComp)
-		class UEquipmentComponent* EquipmentComponent;
+		class UEquipmentComponent* EquipmentComponent;	// 장비관리 컴포넌트
 	UPROPERTY(VisibleAnywhere)
-		class UArmyComponent* ArmyManagerComponent;
+		class UArmyComponent* ArmyManagerComponent;		// 부대관리 컴포넌트
 public:
 	class UStatusComponent* GetStatusComponent() { return StatusComponent; }
 	class UEquipmentComponent* GetEquipmentComponent() { return EquipmentComponent; }
@@ -41,14 +42,17 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere)
-		FGenericTeamId myTeam;
+		FGenericTeamId myTeam;									// TeamID
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<class ABaseCharacter> battleCharacter;
+		TSubclassOf<class ABaseCharacter> battleCharacter;		// BattleCharacter
+
+	// 에디터 테스트용으로 부대에 넣을 부대원List
 	UPROPERTY(EditAnywhere)
-		TArray<TSubclassOf<class UMonster>> ArmyListBP;
+		TArray<TSubclassOf<class UMonster>> ArmyListBP;			
 public:
 	TSubclassOf<class ABaseCharacter> GetCharacter() { return battleCharacter; }
 public:
+	// 데이터 덮어쓰기
 	virtual void SetCharacterData(FSaveCharacterData CharacterData);
 
 	virtual void SetGenericTeamId(const FGenericTeamId& TeamID) { myTeam = TeamID; }

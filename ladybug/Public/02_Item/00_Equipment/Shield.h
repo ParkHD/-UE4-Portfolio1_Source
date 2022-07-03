@@ -6,9 +6,7 @@
 #include "02_Item/00_Equipment/Equipment.h"
 #include "Shield.generated.h"
 
-/**
- * 
- */
+// 방패 아이템
 UCLASS()
 class LADYBUG_API UShield : public UEquipment
 {

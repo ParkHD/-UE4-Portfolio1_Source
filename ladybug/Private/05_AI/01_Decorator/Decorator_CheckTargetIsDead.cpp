@@ -7,6 +7,7 @@
 
 bool UDecorator_CheckTargetIsDead::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
 {
+	// 타겟이 죽었는 지 확인
 	ABaseCharacter* target = Cast<ABaseCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject("Target"));
 	if (target != nullptr)
 	{

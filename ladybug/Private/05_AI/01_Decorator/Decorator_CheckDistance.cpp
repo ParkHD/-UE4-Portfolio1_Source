@@ -13,6 +13,7 @@ bool UDecorator_CheckDistance::CalculateRawConditionValue(UBehaviorTreeComponent
 		AActor* target = Cast<AActor>(obj);
 		if (target != nullptr)
 		{
+			// 타겟과의 거리를 계산하고 허용거리 이내면 true
 			float distance = OwnerComp.GetAIOwner()->GetPawn()->GetDistanceTo(target);
 			if (distance <= attackRange)
 			{

@@ -21,6 +21,7 @@ AMonsterAIController::AMonsterAIController()
 	// 기본제공 AIPerceptionComponent
 	PerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerceptionComponent"));
 
+	// 시야로 AI가 적을 인지하도록 설정
 	UAISenseConfig_Sight* sightConfig;
 	sightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("AISenseConfig_Sight"));
 	sightConfig->SightRadius = 3500.f;
@@ -31,18 +32,11 @@ AMonsterAIController::AMonsterAIController()
 	sightConfig->DetectionByAffiliation = filter;
 	sightConfig->SetMaxAge(5.f);
 	PerceptionComponent->ConfigureSense(*sightConfig);
-
-	//UAISenseConfig_Damage* damageConfig;
-	//damageConfig = CreateDefaultSubobject<UAISenseConfig_Damage>(TEXT("AISenseConfig_Damage"));
-	//PerceptionComponent->ConfigureSense(*damageConfig);
-
 }
 void AMonsterAIController::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	
-	PerceptionComponent->OnPerceptionUpdated.AddUniqueDynamic(this, &AMonsterAIController::OnPerceptionUpdatedEvent);
 	PerceptionComponent->OnTargetPerceptionUpdated.AddUniqueDynamic(this, &AMonsterAIController::OnActorPerceptionUpdatedEvent);
 }
 void AMonsterAIController::OnPossess(APawn* InPawn)
@@ -52,49 +46,22 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
 	ownerMonster = Cast<AMonsterBaseCharacter>(InPawn);
 	if (ownerMonster != nullptr)
 	{
-		// 안해주면 hpBarWidget이 nullptr뜸
+		// 안 해주면 hpBarWidget이 nullptr뜸
 		ownerMonster->GetHPBarWidgetComponent()->InitWidget();
 		UHPBarWidget* hpBarWidget = Cast<UHPBarWidget>(ownerMonster->GetHPBarWidgetComponent()->GetUserWidgetObject());
 		if (hpBarWidget != nullptr)
 		{
 			hpBarWidget->Init();
+			// 몬스터 HPBar 위젯 업데이트
 			ownerMonster->GetStatusComponent()->OnChangeHP.AddUniqueDynamic(hpBarWidget,
 				&UHPBarWidget::UpdateHPBar);
+
+			// 몬스터 블랙보드 MP Value 업데이트
 			ownerMonster->GetStatusComponent()->OnChangeMP.AddUniqueDynamic(this, &AMonsterAIController::SetStatusOnBlackBoard);
-
-		}
-
-		if (ownerMonster->GetAIBehaviorTree() != nullptr)
-		{
-			//RunBehaviorTree(ownerMonster->GetAIBehaviorTree());
 		}
 	}
 }
-void AMonsterAIController::OnPerceptionUpdatedEvent(const TArray<AActor*>& UpdatedActors)
-{
-	/*for (int i = 0; i < UpdatedActors.Num(); i++)
-	{
-		if (UpdatedActors[i]->IsA<ABaseCharacter>())
-		{
-			ABaseCharacter* target = Cast<ABaseCharacter>(GetBlackboardComponent()->GetValueAsObject(FName("target")));
-			
-			if (target == nullptr)
-			{
-				GetBlackboardComponent()->SetValueAsObject("Target", UpdatedActors[i]);
-				break;
-			}
-			else
-			{
-				if (ownerMonster->GetDistanceTo(target) > ownerMonster->GetDistanceTo(UpdatedActors[i]))
-				{
-					GetBlackboardComponent()->SetValueAsObject("Target", UpdatedActors[i]);
-					break;
 
-				}
-			}
-		}
-	}*/
-}
 void AMonsterAIController::OnActorPerceptionUpdatedEvent(AActor* Actor, FAIStimulus Stimulus)
 {
 	if (Stimulus.WasSuccessfullySensed())
@@ -105,8 +72,7 @@ void AMonsterAIController::OnActorPerceptionUpdatedEvent(AActor* Actor, FAIStimu
 		{
 			if (target->GetGenericTeamId() != ownerMonster->GetGenericTeamId())
 			{
-				TArray<AActor*> out;
-				PerceptionComponent->GetKnownPerceivedActors(nullptr, out);
+				// 현재 Target과 지금 인지된 Target의 거리를 비교하여 가까운 것을 Target으로 삼는다.
 				auto curTarget = Cast<ABaseCharacter>(GetBlackboardComponent()->GetValueAsObject("Target"));
 				if(curTarget != nullptr)
 				{

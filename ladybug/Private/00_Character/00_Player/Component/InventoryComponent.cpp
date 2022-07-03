@@ -48,9 +48,7 @@ bool UInventoryComponent::IsFull()
 	for(auto item : Inventory)
 	{
 		if(item == nullptr)
-		{
 			return false;
-		}
 	}
 	return true;
 }
@@ -88,12 +86,14 @@ void UInventoryComponent::AddItem(UItem* item)
 
 void UInventoryComponent::RemoveItem(int32 index)
 {
+	// 인벤토리의 해당 인덱스 빈공간으로 초기화
 	Inventory.EmplaceAt(index, nullptr);
 	OnUpdateInven.Broadcast(Inventory);
 }
 
 void UInventoryComponent::RemoveItem(UItem* item)
 {
+	// 인벤토리의 해당 인덱스를 찾고 빈공간으로 초기화
 	for (int i = 0; i < Inventory.Num(); i++)
 	{
 		if (Inventory[i] == item)
@@ -106,6 +106,7 @@ void UInventoryComponent::RemoveItem(UItem* item)
 
 void UInventoryComponent::DropItem(class UItem* item)
 {
+	// 인벤토리의 해당 인덱스를 찾고 빈공간으로 초기화
 	for(int i = 0; i<Inventory.Num();i++)
 	{
 		if(Inventory[i] == item)
@@ -130,7 +131,7 @@ void UInventoryComponent::UseItem(int32 index)
 		{
 			Inventory[index]->UseItem(GetOwner<AWorldPlayerCharacter>());
 
-			// 무기에 경우 옮겨져서 접근 불가
+			// 무기에 경우 무기창으로 옮겨지므로 nullptr인지 검사
 			if(Inventory[index] != nullptr)
 			{
 				// 카운트가 0아래면 인벤에서 삭제한다.

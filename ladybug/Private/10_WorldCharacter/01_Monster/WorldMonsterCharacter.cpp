@@ -49,21 +49,24 @@ void AWorldMonsterCharacter::BeginPlay()
 	if(UGameplayStatics::GetGameMode(GetWorld())->IsA<AWorldGameMode>())
 	{
 		SpawnLocation = GetActorLocation();
+
+		// 몬스터 스폰되면 DataTable의 정보를 이용해서 부대원들을 넣어준다.
 		auto info = GetWorldMonsterInfo();
 		if (info != nullptr)
 		{
 			for (auto monsterKind : info->monster_Army)
 			{
-				//auto monster = NewObject<UMonster>(GetGameInstance(), NAME_None, RF_NoFlags, monsterKind.monster->GetDefaultObject(), true);
+				// 부대원의 개수를 랜덤으로 정하여 생성하고, 개수가 0이상이라면 부대에 추가한다.
 				auto monster = monsterKind.monster.GetDefaultObject();
 				float monsterCount = FMath::RandRange(monsterKind.MinCount, monsterKind.MaxCount);
 				if (monsterCount > 0)
 				{
-					monster->SetCount(3);
+					monster->SetCount(monsterCount);
 					ArmyManagerComponent->AddArmy(monster);
 				}
 			}
 		}
+		// 몬스터의 이름 위젯을 SetUp해준다.
 		auto widget = Cast<UVillageNameWidget>(monsterNameWidgetComponent->GetUserWidgetObject());
 		if (widget != nullptr)
 		{

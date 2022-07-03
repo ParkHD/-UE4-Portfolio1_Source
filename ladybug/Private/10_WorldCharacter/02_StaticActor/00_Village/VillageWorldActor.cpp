@@ -29,6 +29,7 @@ void AVillageWorldActor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// 마을 이름 위젯 SetUp
 	auto widget = Cast<UVillageNameWidget>(villageNameWidgetComponent->GetUserWidgetObject());
 	if(widget != nullptr)
 	{

@@ -6,9 +6,7 @@
 #include "Animation/AnimNotifies/AnimNotify.h"
 #include "Notify_PlaySound.generated.h"
 
-/**
- * 
- */
+// Attenuation을 설정할 수 있는 Sound Play
 UCLASS()
 class LADYBUG_API UNotify_PlaySound : public UAnimNotify
 {
@@ -17,9 +15,9 @@ public:
 	void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
 protected:
 	UPROPERTY(EditAnywhere)
-		class USoundBase* soundToPlay;
+		class USoundBase* soundToPlay;		// 재생할 사운드
 	UPROPERTY(EditAnywhere)
-		bool bAttenuation = true;
+		bool bAttenuation = true;			// 소리 범위를 설정 할 것 인가?
 	UPROPERTY(EditAnywhere, meta = (EditCondition = "bAttenuation == true"))
-		float falloffDistance = 4000.f;
+		float falloffDistance = 4000.f;		// 소리 유효 범위
 };

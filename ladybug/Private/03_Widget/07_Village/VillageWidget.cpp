@@ -19,6 +19,7 @@ void UVillageWidget::NativeConstruct()
 
 void UVillageWidget::OnClickEnterButton()
 {
+	// VillageLevel로 진입
 	if(!villageTagName.IsNone())
 	{
 		Cast<AWorldGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->OpenVillageLevel(villageTagName);
@@ -28,12 +29,15 @@ void UVillageWidget::OnClickEnterButton()
 void UVillageWidget::OnClickExitButton()
 {
 	SetVisibility(ESlateVisibility::Hidden);
+	// 중단된 게임 다시 시작하기
 	UGameplayStatics::SetGamePaused(GetWorld(), false);
 }
 
 void UVillageWidget::SetUp(FName VillageTagName)
 {
+	// 위젯 업데이트
 	villageTagName = VillageTagName;
+	// 게임인스턴스에서 정보 가져오기
 	auto info = GetGameInstance<UmyGameInstance>()->GetVillageInfo(villageTagName);
 	if(info != nullptr)
 	{

@@ -20,6 +20,7 @@ void UPlayerSkillWidget::SetUp(FWeaponInformation weaponInfo)
 {
 	Init();
 
+	// 현재 무기의 정보를 가져와서 위젯을 업데이트한다.
 	for(int i = 0;i<weaponInfo.Weapon_Skills.Num();i++)
 	{
 		auto skillInfo = weaponInfo.Weapon_Skills[i].GetDefaultObject()->GetSkillInfo();
@@ -32,8 +33,6 @@ void UPlayerSkillWidget::SetUp(FWeaponInformation weaponInfo)
 				{
 					Image_Skill1_Image->SetBrushFromTexture(skillInfo->skill_Image);
 					Image_Skill1_Image->SetVisibility(ESlateVisibility::Visible);
-					
-
 				}
 				else if (i == 1)
 				{
@@ -44,6 +43,7 @@ void UPlayerSkillWidget::SetUp(FWeaponInformation weaponInfo)
 		}
 	}
 
+	// 무기의 종류(근거리, 원거리)에 따라서 다른 이미지를 설정한다.
 	Image_WeaponImage->SetVisibility(ESlateVisibility::Visible);
 	switch(weaponInfo.WeaponType)
 	{
@@ -63,6 +63,7 @@ void UPlayerSkillWidget::SetUp(FWeaponInformation weaponInfo)
 
 void UPlayerSkillWidget::UpdateSkill1CoolTime(bool skillAble)
 {
+	// 스킬 사용 가능한지에 따라 LockImage를 키고 끈다.
 	if(skillAble)
 	{
 		Image_LockSkill1->SetVisibility(ESlateVisibility::Hidden);
@@ -75,6 +76,7 @@ void UPlayerSkillWidget::UpdateSkill1CoolTime(bool skillAble)
 
 void UPlayerSkillWidget::UpdateSkill2CoolTime(bool skillAble)
 {
+	// 스킬 사용 가능한지에 따라 LockImage를 키고 끈다.
 	if (skillAble)
 	{
 		Image_LockSkill2->SetVisibility(ESlateVisibility::Hidden);
@@ -87,6 +89,7 @@ void UPlayerSkillWidget::UpdateSkill2CoolTime(bool skillAble)
 
 void UPlayerSkillWidget::Init()
 {
+	// 초기화
 	Image_Skill1_Image->SetBrushFromTexture(nullptr);
 	Image_Skill1_Image->SetVisibility(ESlateVisibility::Hidden);
 

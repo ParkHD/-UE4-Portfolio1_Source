@@ -21,6 +21,7 @@ void UItemSlotWidget::SetUp(class UItem* itemclass)
 {
 	if (itemclass != nullptr)
 	{
+		// 슬롯에 아이템을 추가하고 아이템 정보에 따라 슬롯위젯 업데이트
 		item = itemclass;
 		const FItemInformation* itemInfo = item->GetItemInfo<FItemInformation>();
 		if (itemInfo != nullptr)

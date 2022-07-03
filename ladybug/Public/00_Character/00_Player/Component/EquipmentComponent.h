@@ -12,7 +12,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeWeapon, FWeaponInformation,
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnUpdateEquiment, class UEquipmentComponent*, EquipComp);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeEquipment, class UStatusComponent*, statComp);
 
-
+// 장비관리 컴포넌트
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class LADYBUG_API UEquipmentComponent : public UActorComponent
 {
@@ -43,9 +43,11 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 		class UArmor* Shoes;
 
-	// 장비한 물건 후보
+	// 장비한 무기 List(4) -> 스왑가능한 무기 List
 	UPROPERTY(VisibleAnywhere)
 		TArray<class UWeapon*> weaponList;
+
+	// 현재 장비한 무기 Index
 	UPROPERTY(VisibleAnywhere)
 		int32 curWeaponIndex = 0;
 	// 장비한 무기
@@ -65,29 +67,29 @@ public:
 	class UArmor* GetGlove() { return Glove; }
 	class UArmor* GetShoes() { return Shoes; }
 protected:
-	// 처음에 장비할 물건
-	UPROPERTY(EditAnywhere)
-		TSubclassOf<class UWeapon> mainWeaponBP;
-	// 처음에 장비할 물건
-	UPROPERTY(EditAnywhere)
-		TSubclassOf<class UWeapon> supWeaponBP;
+	// 장착할 무기List 에디터에서 받기
 	UPROPERTY(EditAnywhere)
 		TArray<TSubclassOf<class UWeapon>> weaponBPList;
 
 public:
-	// 무기 관련
+	// 무기 List 관련
 	bool IsWeaponListEmpty();
 	void AddWeaponList(class UWeapon* weapon);
 	bool IsWeaponListFull();
 	void RemoveWeaponList(int32 index);
-	void SwapWeaponUp(bool isUp);
-	void EquipWeapon(class UWeapon* weapon);
+
+	// 무기 스왑
+	void SwapWeaponUp(bool isUp);				
+	// void EquipWeapon(class UWeapon* weapon);	
+	
+	// 무기 변경함에 따라 위젯 업데이트
 	void UpdateWidget();
 
+	// 무기 List에서 원거리 무기 or 근접 무기 장착
 	void EquipMeleeWeapon();
 	void EquipRangeWeapon();
 
-	//방어구 관련
+	// 방어구 관련 장착 및 해제
 	void EquipHelmet(class UArmor* armor);
 	void EquipCape(class UArmor* armor);
 	void EquipCloth(class UArmor* armor);
@@ -101,23 +103,19 @@ public:
 
 protected:
 	// 무기 관련
-	void UnEquipWeapon();
-	void EquipWeapon(int32 weaponIndex);
-	void EquipSupWeapon(class UWeapon* SupWeapon);
-
-	// 방어구 관련
-
+	void UnEquipWeapon();							// 무기 해제
+	void EquipWeapon(int32 weaponIndex);			// 메인 무기 장착
+	void EquipSupWeapon(class UWeapon* SupWeapon);	// 서브 무기 장착
 
 public:
 	FOnChangeWeapon OnChangeWeapon;		  // 무기교체 위젯
 	FOnUpdateEquiment OnUpdateEquiment;	  // 장비 장착 또는 해제 할 때 업데이트
 	FOnChangeEquipment OnChangeEquipment; // 장비창 스텟 변동
 
-
 public:
-	//WorldCharacter
+	// WorldCharacter 데이터 SetUp
 	void SetEquipComponentData(FEquipComponentSave EquipCompData);
-	//BattleCharacter
+	// BattleCharacter 데이터 SetUp
 	void SetBattleCharacter(class UEquipmentComponent* EquipComp);
 };
 

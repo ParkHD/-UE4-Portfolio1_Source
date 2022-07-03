@@ -21,6 +21,7 @@ void UAddForceNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSeq
 
 	if (owner != nullptr)
 	{
+		// 입력한 방향에 따라 캐릭터 이동
 		switch (forceDir)
 		{
 		case EForceDir::UP:

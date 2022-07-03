@@ -32,6 +32,7 @@ void UItemManagerWidget::NativeConstruct()
 
 void UItemManagerWidget::Init()
 {
+	// 초기화
 	VerticalBox_TargetList->ClearChildren();
 	VerticalBox_MyList->ClearChildren();
 	SetSelectedSlot(nullptr);
@@ -44,6 +45,7 @@ void UItemManagerWidget::Update(TArray<class UItem*> npcShopList, TArray<class U
 
 	if (UMG_ListSlotWidget != nullptr)
 	{
+		// ItemList정보를 가지고 슬롯생성 및 SetUp후 각각 VerticalBox에 넣어주기
 		for (class UItem* shopItem : npcShopList)
 		{
 			if(shopItem != nullptr)
@@ -56,6 +58,7 @@ void UItemManagerWidget::Update(TArray<class UItem*> npcShopList, TArray<class U
 				VerticalBox_TargetList->AddChild(itemSlot);
 			}
 		}
+		// ItemList정보를 가지고 슬롯생성 및 SetUp후 각각 VerticalBox에 넣어주기
 		for (UItem* myItem : myList)
 		{
 			if(myItem != nullptr)
@@ -71,6 +74,7 @@ void UItemManagerWidget::Update(TArray<class UItem*> npcShopList, TArray<class U
 }
 void UItemManagerWidget::SetSelectedSlot(class UItemSlotWidget* listSlot)
 {
+	// 기존에 선택된 슬롯이 있다면 테두리 표시를 꺼주고 새롭게 선택된 슬롯의 테두리 표시를 켜준다.
 	if (selectedSlot != nullptr)
 	{
 		selectedSlot->GetSelectedFrame()->SetVisibility(ESlateVisibility::Hidden);
@@ -86,29 +90,34 @@ void UItemManagerWidget::SetSelectedSlot(class UItemSlotWidget* listSlot)
 
 void UItemManagerWidget::OnClickExit()
 {
+	// 전리품 관리
 	if(UGameplayStatics::GetGameMode(GetWorld())->IsA<ABattleGameMode>())
 	{
 		auto gameMode = Cast<ABattleGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 		auto gameInstance = Cast<UmyGameInstance>(GetGameInstance());
 		auto worldPlayer = gameMode->GetWorldPlayerCharacter();
-		
+
 		if (worldPlayer != nullptr)
 		{
+			// 구매목록을 내 아이템에 추가하고 전리품목록에서 삭제한다.
 			for (UItem* bringItem : purchaseList)
 			{
 				worldPlayer->GetInventoryComponent()->AddItem(bringItem);
 				gameInstance->lootItemList.Remove(bringItem);
 			}
+			// 판매목록을 내 아이템에서 삭제하고 전리품목록에 추가한다.
 			for (UItem* dropItem : sellList)
 			{
 				worldPlayer->GetInventoryComponent()->DropItem(dropItem);
 				gameInstance->lootItemList.Emplace(dropItem);
 			}
 
+			// 구매목록 및 판매목록 초기화
 			purchaseList.Reset();
 			sellList.Reset();
 		}
 	}
+	// 상점
 	else if(UGameplayStatics::GetGameMode(GetWorld())->IsA<AVillageGameMode>())
 	{
 		auto gameMode = Cast<AVillageGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
@@ -117,16 +126,19 @@ void UItemManagerWidget::OnClickExit()
 		{
 			if (worldPlayer != nullptr)
 			{
+				// 구매목록을 내 아이템에 추가하고 전리품목록에서 삭제한다.
 				for (UItem* bringItem : purchaseList)
 				{
 					worldPlayer->GetInventoryComponent()->AddItem(bringItem);
 					npcOwner->GetShopList().Remove(bringItem);
 				}
+				// 판매목록을 내 아이템에서 삭제하고 전리품목록에 추가한다.
 				for (UItem* dropItem : sellList)
 				{
 					worldPlayer->GetInventoryComponent()->DropItem(dropItem);
 					npcOwner->GetShopList().Emplace(dropItem);
 				}
+				// 구매목록 및 판매목록 초기화
 				purchaseList.Reset();
 				sellList.Reset();
 			}
@@ -137,6 +149,7 @@ void UItemManagerWidget::OnClickExit()
 
 void UItemManagerWidget::OnClickBringIn()
 {
+	// 선택된 슬롯의 아이템을 구매목록에 추가하고 위젯을 이동시킨다.
 	if (selectedSlot != nullptr)
 	{
 		if (!purchaseList.Contains(selectedSlot->GetItem()))
@@ -149,6 +162,7 @@ void UItemManagerWidget::OnClickBringIn()
 }
 void UItemManagerWidget::OnClickBringOut()
 {
+	// 선택된 슬롯의 아이템을 구매목록에서 삭제하고 위젯을 이동시킨다.
 	if (selectedSlot != nullptr)
 	{
 		if (!sellList.Contains(selectedSlot->GetItem()))
@@ -165,6 +179,7 @@ void UItemManagerWidget::OnVisibilityChangedEvent(ESlateVisibility visible)
 	if (visible == ESlateVisibility::Visible)
 	{
 	}
+	// 위젯이 꺼지면 초기화를 시켜준다.
 	else if (visible == ESlateVisibility::Hidden)
 	{
 		UMG_ItemInfo->Init();

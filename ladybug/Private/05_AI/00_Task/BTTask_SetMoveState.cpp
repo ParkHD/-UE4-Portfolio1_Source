@@ -10,9 +10,11 @@ EBTNodeResult::Type UBTTask_SetMoveState::ExecuteTask(UBehaviorTreeComponent& Ow
 {
 	EMoveState type = AIMoveState;
 
+	// 블랙보드 값을 변경해준다.
 	OwnerComp.GetBlackboardComponent()->SetValueAsEnum(GetSelectedBlackboardKey(), (uint8)AIMoveState);
 	type = AIMoveState;
-	
+
+	// 캐릭터의 MoveState변경
 	AMonsterBaseCharacter* owner = Cast<AMonsterBaseCharacter>(OwnerComp.GetAIOwner()->GetPawn());
 	if (owner == nullptr)
 	{

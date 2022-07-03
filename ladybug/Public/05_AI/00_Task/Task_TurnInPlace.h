@@ -7,7 +7,7 @@
 #include "Task_TurnInPlace.generated.h"
 
 /**
- * 
+ * 제자리에서 회전 Task -> AnimInstance를 이용한 회전
  */
 UCLASS()
 class LADYBUG_API UTask_TurnInPlace : public UBTTaskNode
@@ -30,9 +30,9 @@ protected:
 		class ABaseCharacter* target;
 
 	UPROPERTY(EditAnywhere)
-		float allowableAngle = 0.f;
+		float allowableAngle = 0.f;			// 허용가능한 타겟과의 각도
 	UPROPERTY(EditAnywhere)
-		float turnSpeed;
+		float turnSpeed;					// 회전 보간 속도
 public:
 	FName GetSelectedBlackBoardKey() { return BlackBoardKey.SelectedKeyName; }
 };

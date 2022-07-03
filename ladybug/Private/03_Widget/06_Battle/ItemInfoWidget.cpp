@@ -20,6 +20,8 @@ void UItemInfoWidget::NativeConstruct()
 void UItemInfoWidget::SetUp(UItem* item)
 {
 	Init();
+
+	// 아이템 정보에 따른 위젯 업데이트
 	auto info = item->GetItemInfo<FItemInformation>();
 	if (info != nullptr)
 	{
@@ -31,6 +33,7 @@ void UItemInfoWidget::SetUp(UItem* item)
 			auto equipItem = Cast<UEquipment>(item);
 			if (equipItem != nullptr)
 			{
+				// 수치가 있을 때만 위젯의 Visible을 켜주어서 쓸데없이 공간이 늘어나지 않게 한다.
 				if (!equipItem->GetStat().MaxHP == 0)
 				{
 					HorizontalBox_HPStat->SetVisibility(ESlateVisibility::Visible);
@@ -64,6 +67,7 @@ void UItemInfoWidget::SetUp(class UItemSlotWidget* selectedSlot)
 {
 	Init();
 
+	// 아이템 정보에 따른 위젯 업데이트
 	auto item = selectedSlot->GetItem();
 	if(item != nullptr)
 	{
@@ -78,6 +82,7 @@ void UItemInfoWidget::SetUp(class UItemSlotWidget* selectedSlot)
 				auto equipItem = Cast<UEquipment>(selectedSlot->GetItem());
 				if(equipItem != nullptr)
 				{
+					// 수치가 있을 때만 위젯의 Visible을 켜주어서 쓸데없이 공간이 늘어나지 않게 한다.
 					if(!equipItem->GetStat().MaxHP == 0)
 					{
 						HorizontalBox_HPStat->SetVisibility(ESlateVisibility::Visible);
@@ -111,6 +116,7 @@ void UItemInfoWidget::SetUp(class UItemSlotWidget* selectedSlot)
 
 void UItemInfoWidget::Init()
 {
+	// 위젯 초기화
 	TextBlock_ItemDecription->SetText(FText::FromString(""));
 	Image_ItemImage->SetBrushFromTexture(nullptr);
 	TextBlock_ItemName->SetText(FText::FromString(""));

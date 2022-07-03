@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "EquipmentActor.generated.h"
 
+// ¿Â∫ÒActor
 UCLASS()
 class LADYBUG_API AEquipmentActor : public AActor
 {

@@ -9,8 +9,10 @@
 
 void UArmor::UseItem(APlayerCharacter* player)
 {
+	// 장비타입을 구분해준다.
 	switch(GetItemInfo<FArmorInformation>()->armorType)
 	{
+		// 기존 장착한 장비 해제 후 장비 장착
 	case EArmorType::HELMET:
 		player->GetInventoryComponent()->RemoveItem(this);
 		player->GetEquipmentComponent()->EquipHelmet(this);
@@ -39,6 +41,7 @@ void UArmor::UseItem(AWorldPlayerCharacter* player)
 	// 장비타입을 구분해준다.
 	switch (GetItemInfo<FArmorInformation>()->armorType)
 	{
+		// 기존 장착한 장비 해제 후 장비 장착
 	case EArmorType::HELMET:
 		player->GetInventoryComponent()->RemoveItem(this);
 		player->GetEquipmentComponent()->EquipHelmet(this);

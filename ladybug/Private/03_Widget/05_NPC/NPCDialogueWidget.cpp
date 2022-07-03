@@ -29,39 +29,48 @@ void UNPCDialogueWidget::OnClickShop()
 {
 	if(ownerNPC != nullptr)
 	{
+		// 만들어진 상점 위젯이 없다면 새로 만들어준다.
 		if (shopWidget == nullptr)
 		{
 			if (UMG_shopWidget != nullptr)
 			{
+				// 플레이어
 				auto caller = ownerNPC->GetCaller();
 				if (caller != nullptr)
 				{
+					// 상점 위젯이 유닛상점인지 장비상점인지 구분
 					if(UMG_shopWidget->IsChildOf<UUnitShopWidget>())
 					{
+						// 유닛상점 위젯 생성
 						shopWidget = CreateWidget<UUserWidget>(caller->GetController<ACustomController>(), UMG_shopWidget);
 						auto unitShopWidget = Cast<UUnitShopWidget>(shopWidget);
-					
+
+						// NPC의 상점 List를 가져온다
 						TArray<UMonster*> shopList;
 						for (auto unit : ownerNPC->GetShopList())
 						{
 							shopList.Emplace(Cast<UMonster>(unit));
 						}
 
+						// List를 토대로 상점위젯을 업데이트한다.
 						unitShopWidget->Update(shopList, Cast<AWorldPlayerCharacter>(caller->GetWorldBaseCharacter())->GetArmyComponent()->GetArmyList());
 						unitShopWidget->SetNPCOwner(ownerNPC);
 						unitShopWidget->AddToViewport();
 					}
 					else if (UMG_shopWidget->IsChildOf<UItemManagerWidget>())
 					{
+						// 물건상점 위젯 생성
 						shopWidget = CreateWidget<UUserWidget>(caller->GetController<ACustomController>(), UMG_shopWidget);
 						auto unitShopWidget = Cast<UItemManagerWidget>(shopWidget);
 
+						// NPC의 상점 List를 가져온다
 						TArray<UItem*> shopList;
 						for (auto item : ownerNPC->GetShopList())
 						{
 							shopList.Emplace(Cast<UItem>(item));
 						}
 
+						// List를 토대로 상점위젯을 업데이트한다.
 						unitShopWidget->Update(shopList, Cast<AWorldPlayerCharacter>(caller->GetWorldBaseCharacter())->GetInventoryComponent()->GetInventory());
 						unitShopWidget->SetNPCOwner(ownerNPC);
 						unitShopWidget->AddToViewport();
@@ -70,6 +79,7 @@ void UNPCDialogueWidget::OnClickShop()
 			}
 		}
 
+		// 상점 위젯을 킨다
 		if (shopWidget != nullptr)
 		{
 			shopWidget->SetVisibility(ESlateVisibility::Visible);
@@ -79,7 +89,9 @@ void UNPCDialogueWidget::OnClickShop()
 
 void UNPCDialogueWidget::OnClickExit()
 {
+	// 대화창을 끈다.
 	SetVisibility(ESlateVisibility::Hidden);
+	// 상호작용을 종료한다.
 	ownerNPC->GetCaller()->SetInteract(false);
 }
 

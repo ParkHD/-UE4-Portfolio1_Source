@@ -15,6 +15,7 @@ void UWeaponCollisionNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, 
 
 		if (owner != nullptr)
 		{
+			// 무기의 콜리전 활성화
 			AWeaponActor* weapon = Cast<AWeaponActor>(owner->GetWeaponComponent()->GetChildActor());
 			if (weapon != nullptr)
 			{
@@ -32,11 +33,13 @@ void UWeaponCollisionNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UA
 	{
 		if (owner != nullptr)
 		{
+			// 무기의 콜리전 비활성화
 			AWeaponActor* weapon = Cast<AWeaponActor>(owner->GetWeaponComponent()->GetChildActor());
 			if (weapon != nullptr)
 			{
 				weapon->GetSkeletalMesh()->SetCollisionProfileName("NoCollision");
 			}
+			// 공격 한 대상 초기화
 			owner->ClearHitActors();
 		}
 	}

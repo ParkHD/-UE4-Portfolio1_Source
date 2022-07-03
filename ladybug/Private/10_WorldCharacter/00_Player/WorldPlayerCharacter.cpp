@@ -56,6 +56,7 @@ void AWorldPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// 테스트용
 	for(auto item : itemListBP)
 	{
 		InventoryComponent->AddItem(item.GetDefaultObject());
@@ -75,6 +76,7 @@ void AWorldPlayerCharacter::PossessedBy(AController* NewController)
 	if (NewController != nullptr)
 	{
 		playerController = Cast<AWorldPlayerController>(NewController);
+		// 마우스 커서 보이기
 		if (playerController != nullptr)
 		{
 			playerController->bShowMouseCursor = true;
@@ -110,29 +112,30 @@ void AWorldPlayerCharacter::ReleaseMove()
 	FHitResult hit;
 	if (GetController<APlayerController>()->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), false, hit))
 	{
-		//clickNiagaraComponent->GetAsset()->Emitter
+		// 이미 클릭 효과가 실행되고 있다면 중단 하고 새롭게 클릭된 곳에 효과 실행
 		if(clickNiagaraComponent != nullptr)
 		{
 			clickNiagaraComponent->DeactivateImmediate();
 		}
 		clickNiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), clickParticle, hit.Location);
-		//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), clickParticle, hit.Location, FRotator::ZeroRotator, true);
+		// 캐릭터 이동
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetController(), hit.Location);
 	}
 }
 
 void AWorldPlayerCharacter::PressRotate()
 {
-	bClickRotate = true;
+	bClickRotate = true;	// 왼쪽 마우스 버튼 클릭
 }
 void AWorldPlayerCharacter::ReleaseRotate()
 {
-	bClickRotate = false;
+	bClickRotate = false;	// 왼쪽 마우스 버튼 클릭 해제
 }
 void AWorldPlayerCharacter::RotateCamera(float newAxisValue)
 {
 	if (bClickRotate)
 	{
+		// 카메라 회전
 		FRotator newRotator = SpringArmComponent->GetRelativeRotation();
 		newRotator.Yaw += newAxisValue;
 		SpringArmComponent->SetRelativeRotation(newRotator);
@@ -140,6 +143,7 @@ void AWorldPlayerCharacter::RotateCamera(float newAxisValue)
 }
 void AWorldPlayerCharacter::ZoomCamera(float newAxisValue)
 {
+	// 휠 방향에 따라 확대 or 축소
 	SpringArmComponent->TargetArmLength = FMath::Clamp(SpringArmComponent->TargetArmLength -= newAxisValue * speed, 300.f, 1000.f);
 	SpringArmComponent->TargetOffset.Z = FMath::Clamp(SpringArmComponent->TargetOffset.Z -= newAxisValue * speed, 300.f, 1000.f);
 }
@@ -170,12 +174,14 @@ void AWorldPlayerCharacter::OnActorBeginOverlapEvent(AActor* OverlappedActor, AA
 {
 	if(playerController != nullptr)
 	{
+		// 몬스터를 만났을 때 전투창 열고 게임 정지
 		if (OtherActor->IsA<AWorldMonsterCharacter>())
 		{
 			auto target = Cast<AWorldMonsterCharacter>(OtherActor);
 			playerController->OpenBattleWidget(target);
 			UGameplayStatics::SetGamePaused(GetWorld(), true);
 		}
+		// 마을을 만났을 때 마을진입창 열고 게임 정지
 		else if (OtherActor->IsA<AVillageWorldActor>())
 		{
 			auto target = Cast<AVillageWorldActor>(OtherActor);
@@ -192,6 +198,7 @@ void AWorldPlayerCharacter::SetCharacterData(FSaveCharacterData CharacterData)
 {
 	Super::SetCharacterData(CharacterData);
 
+	// 데이터 덮어쓰기
 	InventoryComponent->SetInvenComponentData(CharacterData.InvenComponentData);
 	ArmyManagerComponent->SetArmyComponentData(CharacterData.ArmyComponentData);
 	EquipmentComponent->SetEquipComponentData(CharacterData.EquipComponentData);

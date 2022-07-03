@@ -24,11 +24,14 @@ void AWeaponActor::OnActorBeginOverlapEvent(AActor* OverlappedActor, AActor* Oth
 		auto target = Cast<ABaseCharacter>(OtherActor);
 		if (target != nullptr && target->GetGenericTeamId() != owner->GetGenericTeamId())
 		{
+			// 대미지 계산
 			float damage = owner->GetStatusComponent()->GetStat().Damage;
 			if(owner->AddHitActors(target))
 			{
+				// 대미지 주기
 				FDamageEvent damageEvent;
 				target->TakeDamageType(EDamageType::NORMAL, damage, damageEvent, owner->GetController(), owner);
+				// 하나의 대상에게만 대미지 주기위함
 				SkeletalMesh->SetCollisionProfileName("NoCollision");
 			}
 		}

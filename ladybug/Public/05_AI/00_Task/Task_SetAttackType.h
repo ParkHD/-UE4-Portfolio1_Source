@@ -8,7 +8,7 @@
 #include "Task_SetAttackType.generated.h"
 
 /**
- * 
+ * AttackType(Melee, Range) 변경하는 Task -> 무기스왑에 사용
  */
 UCLASS()
 class LADYBUG_API UTask_SetAttackType : public UBTTaskNode

@@ -17,6 +17,7 @@ bool UDecorator_CheckDistanceTo::CalculateRawConditionValue(UBehaviorTreeCompone
 			AActor* target = Cast<AActor>(obj);
 			if (target != nullptr)
 			{
+				// 타겟과의 거리를 구하고 허용거리 이내면 true
 				float distancefromTarget = OwnerComp.GetAIOwner()->GetPawn()->GetDistanceTo(target);
 				if (distancefromTarget <= distance)
 				{
@@ -27,6 +28,7 @@ bool UDecorator_CheckDistanceTo::CalculateRawConditionValue(UBehaviorTreeCompone
 	}
 	else if(GetSelectedBlackboardKey() == "PatrolLocation")
 	{
+		// 스폰된 위치와 순찰 할 위치의 거리를 구하고 허용거리 이내면 true
 		auto patrolVector = OwnerComp.GetBlackboardComponent()->GetValueAsVector(GetSelectedBlackboardKey());
 		FVector spawnVector = OwnerComp.GetAIOwner()->GetPawn<AWorldMonsterCharacter>()->GetSpawnLocation();
 		float distancefromTarget = FVector::Distance(spawnVector, patrolVector);

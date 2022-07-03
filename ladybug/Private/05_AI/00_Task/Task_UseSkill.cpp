@@ -15,6 +15,7 @@ EBTNodeResult::Type UTask_UseSkill::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 
 	if (owner != nullptr)
 	{
+		// 사용할 스킬 랜덤하게 구하고 스킬 사용
 		if(bRand)
 		{
 			int32 index = FMath::RandRange(0, skillTags.Num() - 1);
@@ -23,6 +24,7 @@ EBTNodeResult::Type UTask_UseSkill::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 		}
 		else
 		{
+			// 지정한 스킬 사용
 			if (owner->GetSkillComponent()->IsContainSkill(skillTag))
 			{
 				owner->GetSkillComponent()->UseSkill(skillTag);

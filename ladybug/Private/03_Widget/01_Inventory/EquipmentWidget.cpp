@@ -14,6 +14,7 @@ void UEquipmentWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	// 슬롯 인덱스 초기화 : 0~3은 무기 슬롯, 4~8은 방어구 슬롯
 	for(int i = 0; i<VerticalBox_WeaponList->GetAllChildren().Num();i++)
 	{
 		auto slot = Cast<UEquipButtonWidget>(VerticalBox_WeaponList->GetChildAt(i));

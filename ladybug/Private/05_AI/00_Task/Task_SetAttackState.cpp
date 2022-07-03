@@ -8,6 +8,7 @@
 
 EBTNodeResult::Type UTask_SetAttackState::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
+	// 블랙보드 값 저장
 	OwnerComp.GetBlackboardComponent()->SetValueAsEnum("AttackState", (uint8)AIAttackState);
 
 	AMonsterBaseCharacter* owner = Cast<AMonsterBaseCharacter>(OwnerComp.GetAIOwner()->GetPawn());

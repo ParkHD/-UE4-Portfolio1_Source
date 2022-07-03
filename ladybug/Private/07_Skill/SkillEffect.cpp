@@ -19,8 +19,17 @@ void USkillEffect::BeginDestroy()
 
 void USkillEffect::ApplyDurationEffect(ABaseCharacter* target)
 {
+	// effect를 적용한다
 	target->GetSkillComponent()->AddSkillEffect(effectTag, effectTime);
-
+	switch (effectTarget)
+	{
+	case EEffectTarget::COOLTIME:
+		break;
+	case EEffectTarget::DAMAGE:
+		target->GetStatusComponent()->AddDamage(effectValue);
+		break;
+	}
+	// 일정시간 후에 effect를 삭제한다.
 	FTimerDelegate endEffectDelegate = FTimerDelegate::CreateUObject(this, &USkillEffect::RemoveEffect, target);
 	target->GetWorldTimerManager().SetTimer(
 		endEffectTimer,
@@ -30,16 +39,28 @@ void USkillEffect::ApplyDurationEffect(ABaseCharacter* target)
 }
 void USkillEffect::ApplyInstantEffect(class ABaseCharacter* target)
 {
+	// effect를 적용한다
 	target->GetSkillComponent()->AddSkillEffect(effectTag, 0);
-
+	// cost를 깍는다
 	target->GetStatusComponent()->AddMP(-effectValue);
-
+	// effect를 삭제한다.
 	RemoveEffect(target);
 }
 void USkillEffect::RemoveEffect(class ABaseCharacter* target)
 {
 	if(target != nullptr)
 	{
+		// 적용되어 있던 effect를 제거
+		switch (effectTarget)
+		{
+		case EEffectTarget::COOLTIME:
+			break;
+		case EEffectTarget::DAMAGE:
+			target->GetStatusComponent()->AddDamage(-effectValue);
+			break;
+		}
+
+		// 적용되고 있는 effect 제거
 		if(target->GetSkillComponent() != nullptr)
 		{
 			target->GetSkillComponent()->RemoveSkillEffect(effectTag);
@@ -60,8 +81,8 @@ void USkillEffect::ApplyEffect(class ABaseCharacter* target)
 }
 bool USkillEffect::CheckEffectValue(class ABaseCharacter* target)
 {
+	// 충분한 MP가 있는지 확인한다.
 	return target->GetStatusComponent()->CheckMP(effectValue);
-	
 }
 
 void USkillEffect::RemoveTimer(class ABaseCharacter* target)

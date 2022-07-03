@@ -14,6 +14,7 @@ void UComboAttackNotifyState::BranchingPointNotifyBegin(FBranchingPointNotifyPay
 {
 	owner = BranchingPointPayload.SkelMeshComponent->GetOwner<APlayerCharacter>();
 
+	// 콤보 입력 초기화
 	if (owner != nullptr)
 	{
 		owner->bInputComboAttack = false;
@@ -29,10 +30,12 @@ void UComboAttackNotifyState::BranchingPointNotifyEnd(FBranchingPointNotifyPaylo
 {
 	if (owner != nullptr)
 	{
+		// 콤보가 입력 되었으면 다음 섹션으로 이동
 		if (owner->bInputComboAttack)
 		{
 			owner->GetMesh()->GetAnimInstance()->Montage_JumpToSection(sectionName);
 		}
+		// 콤보가 입력이 안 되었으면 몽타주 중단
 		else
 		{
 			owner->SetActionState(EActionState::NORMAL);

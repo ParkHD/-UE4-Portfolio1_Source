@@ -27,6 +27,7 @@ void UBattleWidget::SetUp(class AWorldPlayerCharacter* Player, class AWorldMonst
 }
 void UBattleWidget::UpdateSlot()
 {
+	// 부대리스트 위젯 업데이트
 	if(player != nullptr)
 	{
 		UMG_MyArmyList->UpdateSlot(player->GetArmyComponent()->GetArmyList());
@@ -43,6 +44,7 @@ void UBattleWidget::OnClickStartBattleEvent()
 		auto gameMode = Cast<AWorldGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 		if (gameMode != nullptr)
 		{
+			// 전투Level로 이동
 			gameMode->OpenBattleLevel(target);
 		}
 	}
@@ -54,6 +56,7 @@ void UBattleWidget::OnClickRunAwayEvent()
 }
 void UBattleWidget::OnVisibilityChangeEvent(ESlateVisibility visible)
 {
+	// 위젯이 켜지면 위젯 업데이트를 한다.
 	if(visible == ESlateVisibility::Visible)
 	{
 		UpdateSlot();

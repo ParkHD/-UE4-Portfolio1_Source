@@ -6,7 +6,7 @@
 #include "GameFramework/SaveGame.h"
 #include "MySaveGame.generated.h"
 
-
+// SaveData관리
 USTRUCT(BlueprintType)
 struct FMonsterSaveData
 {
@@ -14,9 +14,9 @@ struct FMonsterSaveData
 
 public:
 	UPROPERTY(BlueprintReadWrite)
-		class UMonster* character;
+		class UMonster* character;		// monster class
 	UPROPERTY(BlueprintReadWrite)
-		FVector characterLocation;
+		FVector characterLocation;		// 캐릭터 위치
 };
 
 UCLASS()

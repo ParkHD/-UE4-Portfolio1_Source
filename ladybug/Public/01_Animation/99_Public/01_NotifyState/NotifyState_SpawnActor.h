@@ -6,9 +6,8 @@
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "NotifyState_SpawnActor.generated.h"
 
-/**
- * 
- */
+
+// Actor를 Spawn하는 NotifyState : 몬스터 소환 스킬에 사용 -> 파티클 효과를 실행하고 효과가 끝날때 몬스터 소환
 UCLASS()
 class LADYBUG_API UNotifyState_SpawnActor : public UAnimNotifyState
 {
@@ -20,17 +19,18 @@ protected:
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)override;
 protected:
 	UPROPERTY(EditAnywhere)
-		class ABaseCharacter* owner;
+		class ABaseCharacter* owner;			// owner
 
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<class AActor> SpawnActorBP;
+		TSubclassOf<class AActor> SpawnActorBP;	// 스폰할 Actor
 	UPROPERTY(EditAnywhere)
-		float SpawnInterval = 200.f;
+		float SpawnInterval = 200.f;			// 스폰 간격
 	UPROPERTY(EditAnywhere)
-		int32 SpawnCount;
+		int32 SpawnCount;						// 스폰 개수
 	UPROPERTY(EditAnywhere)
-		UParticleSystem* spawnParticle;
+		UParticleSystem* spawnParticle;			// 스폰 할 시 효과 파티클
 	UPROPERTY(EditAnywhere)
-		float tempLocationZ;
-	TArray<FVector> SpawnLocationsArray;
+		float tempLocationZ;					// 파티클 위치 조정
+
+	TArray<FVector> SpawnLocationsArray;		// 스폰 할 위치 Array
 };

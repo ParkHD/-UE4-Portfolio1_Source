@@ -6,9 +6,7 @@
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "ComboAttackNotifyState.generated.h"
 
-/**
- * 
- */
+// 콤보 공격 NotifyState
 UCLASS()
 class LADYBUG_API UComboAttackNotifyState : public UAnimNotifyState
 {
@@ -20,8 +18,10 @@ protected:
 	virtual void BranchingPointNotifyTick(FBranchingPointNotifyPayload& BranchingPointPayload, float FrameDeltaTime) override;
 	virtual void BranchingPointNotifyEnd(FBranchingPointNotifyPayload& BranchingPointPayload) override;
 protected:
-	class APlayerCharacter* owner;
+	UPROPERTY()
+		class APlayerCharacter* owner;
+
+	// 콤보 입력으로 다음으로 이동 할 몽타주 섹션
 	UPROPERTY(EditAnywhere)
 		FName sectionName;
-
 };

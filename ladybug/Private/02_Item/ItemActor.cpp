@@ -78,6 +78,7 @@ void AItemActor::Tick(float DeltaTime)
 
 void AItemActor::OnActorBeginOverlapEvent(AActor* OverlappedActor, AActor* OtherActor)
 {
+	// 아이템 주위에 캐릭터가 들어가면 위젯 활성화
 	APlayerCharacter* player = Cast<APlayerCharacter>(OtherActor);
 	if (player != nullptr)
 	{
@@ -88,6 +89,7 @@ void AItemActor::OnActorBeginOverlapEvent(AActor* OverlappedActor, AActor* Other
 
 void AItemActor::OnActorEndOverlapEvent(AActor* OverlappedActor, AActor* OtherActor)
 {
+	// 아이템 주위에서 캐릭터가 나가면 위젯 비활성화
 	APlayerCharacter* player = Cast<APlayerCharacter>(OtherActor);
 	if (player != nullptr)
 	{

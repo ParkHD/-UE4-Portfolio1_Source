@@ -23,6 +23,7 @@ EBTNodeResult::Type UTask_Block::ExecuteTask(UBehaviorTreeComponent& OwnerComp, 
 
 	if (bRandom)
 	{
+		// 방어를 유지할 시간을 Random으로 설정한다.
 		blockTime = FMath::FRandRange(1.f, 4.f);
 	}
 	time = 0.f;
@@ -34,7 +35,7 @@ void UTask_Block::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory,
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
 	time += DeltaSeconds;
-	UE_LOG(LogTemp, Log, TEXT("%f"), time);
+	// 시간이 끝나면 방어를 해제하고 종료한다.
 	if (time >= blockTime)
 	{
 		owner->SetActionState(EActionState::NORMAL);

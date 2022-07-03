@@ -8,6 +8,7 @@
 
 bool UDecorator_CheckTargetDead::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
 {
+	// 현재 나의 블랙보드 Target값이 죽었는지 확인
 	ABaseCharacter* target = Cast<ABaseCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject("Target"));
 	if(target != nullptr)
 	{

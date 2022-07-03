@@ -8,7 +8,7 @@
 #include "Task_SetActionState.generated.h"
 
 /**
- * 
+ * ActionState(Attack, Block, Skill ...) 변경 Task
  */
 UCLASS()
 class LADYBUG_API UTask_SetActionState : public UBTTask_BlackboardBase
@@ -19,7 +19,7 @@ protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 protected:
 	UPROPERTY(EditAnywhere, meta = (EditCondition = "bRand == false"))
-		EActionState AIActionState;
+		EActionState AIActionState;		
 	UPROPERTY(EditAnywhere)
-		bool bRand = false;
+		bool bRand = false;					// ActionState를 랜덤하게 바꿀 것인지
 };

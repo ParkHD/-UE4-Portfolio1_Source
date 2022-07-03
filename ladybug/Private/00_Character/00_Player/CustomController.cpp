@@ -1,6 +1,4 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "00_Character/00_Player/CustomController.h"
 #include "00_Character/00_Player/PlayerCharacter.h"
 #include "00_Character/00_Player/Component/EquipmentComponent.h"
@@ -29,24 +27,22 @@ void ACustomController::OnPossess(APawn* aPawn)
 		mainWidget = CreateWidget<UBattleMainWidget>(this, mainWidgetClass);
 		if (mainWidget != nullptr)
 		{
+			// 캐릭터 HP,SP,Stamina 변동 델리게이트
 			ownerPlayer->GetStatusComponent()->OnChangeHP.AddUniqueDynamic(mainWidget->GetUMG_PlayerStatus(), &UPlayerStatusWidget::UpdateHPProgressBar);
 			ownerPlayer->GetStatusComponent()->OnChangeSP.AddUniqueDynamic(mainWidget->GetUMG_PlayerStatus(), &UPlayerStatusWidget::UpdateSPProgressBar);
 			ownerPlayer->GetStatusComponent()->OnChangeMP.AddUniqueDynamic(mainWidget->GetUMG_PlayerStatus(), &UPlayerStatusWidget::UpdateMPProgressBar);
 
+			// 무기 스왑 시 위젯 변경
 			ownerPlayer->GetEquipmentComponent()->OnChangeWeapon.AddUniqueDynamic(mainWidget->GetUMG_PlayerSkillInfo(), &UPlayerSkillWidget::SetUp);
 			ownerPlayer->GetEquipmentComponent()->UpdateWidget();
 
+			// 무기 스왑 시 현재 스킬 위젯 변경
 			ownerPlayer->GetSkillComponent()->UpdateSkill1Able.AddUniqueDynamic(mainWidget->GetUMG_PlayerSkillInfo(), &UPlayerSkillWidget::UpdateSkill1CoolTime);
 			ownerPlayer->GetSkillComponent()->UpdateSkill2Able.AddUniqueDynamic(mainWidget->GetUMG_PlayerSkillInfo(), &UPlayerSkillWidget::UpdateSkill2CoolTime);
 
 			mainWidget->AddToViewport();
 		}
 	}
-}
-void ACustomController::PlayerTick(float DeltaTime)
-{
-	Super::PlayerTick(DeltaTime);
-	
 }
 
 void ACustomController::TurnOnInteractKey(bool bTurn)
@@ -70,6 +66,7 @@ void ACustomController::TurnOnAimWidget(bool bTurn)
 		{
 			if(mainWidget->GetAimWidget()->GetVisibility() == ESlateVisibility::Hidden)
 			{
+				// AimWidget 기본 크기로 초기화
 				mainWidget->GetAimWidget()->SetBrushSize(FVector2D(150, 150));
 				mainWidget->GetAimWidget()->SetVisibility(ESlateVisibility::Visible);
 			}
@@ -100,6 +97,7 @@ void ACustomController::SetUpAimSize(FVector2D size2D)
 
 void ACustomController::SetUpTargetName(FText targetName)
 {
+	// 상호작용 할 타겟 이름을 나타낼 위젯 업데이트
 	if(mainWidget != nullptr)
 	{
 		auto targetNameText = mainWidget->GetInteractTarget();
@@ -124,6 +122,7 @@ void ACustomController::OpenItemManger(TArray<class UItem*> targetItemList)
 		auto characterOwner = Cast<AWorldPlayerCharacter>(GetPawn<APlayerCharacter>()->GetWorldBaseCharacter());
 		if(characterOwner != nullptr)
 		{
+			// 전리품List를 이용해서 위젯 업데이트
 			mainWidget->GetUMG_LootItemManager()->Update(targetItemList, characterOwner->GetInventoryComponent()->GetInventory());
 			mainWidget->GetUMG_LootItemManager()->SetVisibility(ESlateVisibility::Visible);
 		}

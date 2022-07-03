@@ -57,4 +57,6 @@ void UmyGameInstance::SetPlayerData(FSaveCharacterData Data)
 	PlayerArmy = Data.ArmyComponentData.ArmyList;
 	PlayerWeaponList = Data.EquipComponentData.WeaponList;
 	PlayerArmorList = Data.EquipComponentData.ArmorList;
+
+	PlayerCharacterClass = Data.WorldCharacterClass;
 }

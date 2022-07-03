@@ -16,8 +16,7 @@ EBTNodeResult::Type UTask_TurnToTarget::ExecuteTask(UBehaviorTreeComponent& Owne
 	Super::ExecuteTask(OwnerComp, NodeMemory);
 
 	bTick = false;
-	currentTime = 0.f;
-	// 이 값들이 왜 저장이 될까 초기화가 안되고..
+	currentTime = 0.f;	// 시간 초기화
 	owner = Cast<ABaseCharacter>(OwnerComp.GetAIOwner()->GetPawn());
 	if (owner == nullptr)
 	{
@@ -38,6 +37,7 @@ void UTask_TurnToTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
+	// 시간 제한이 있다면 허용시간이 지나면 실행하고있던 몽타주를 종료하고 Task종료
 	if (bTimeLimit)
 	{
 		currentTime += DeltaSeconds;
@@ -48,10 +48,10 @@ void UTask_TurnToTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 		}
 	}
 
+	// 타겟과의 각도 구하기
 	FVector dirVector = target->GetActorLocation() - owner->GetActorLocation();
 	FRotator dir = owner->GetActorRotation();
 	dir.Yaw = dirVector.Rotation().Yaw;
-
 	float angle = dir.Yaw - owner->GetActorRotation().Yaw;
 	if (angle > 180)
 	{
@@ -62,13 +62,14 @@ void UTask_TurnToTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 		angle += 360.f;
 	}
 
+	// 타겟과의 각도가 허용범위 이하라면 몽타주를 종료하고 Task종료
 	if (FMath::Abs(angle) <= allowableAngle)
 	{
-		UE_LOG(LogTemp, Log, TEXT("angle : %f"), angle);
 		owner->GetMesh()->GetAnimInstance()->Montage_Stop(0.2f);
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 
+	// 보간을 이용하여 회전
 	if (bTick)
 	{
 		FRotator rotation = FMath::RInterpTo(owner->GetActorRotation(), dir, DeltaSeconds, rotationSpeed);
@@ -78,9 +79,10 @@ void UTask_TurnToTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 void UTask_TurnToTarget::Turn()
 {
 	owner->SetActorRotation(FRotator(0, owner->GetActorRotation().Yaw, 0 ));
+
+	// 타겟과의 각도 구하기
 	FVector dirVector = target->GetActorLocation() - owner->GetActorLocation();
 	FRotator dir = dirVector.Rotation();
-
 	float angle = dir.Yaw - owner->GetActorRotation().Yaw;
 	if (angle > 180)
 	{
@@ -93,9 +95,11 @@ void UTask_TurnToTarget::Turn()
 
 	FTimerHandle turnTimer;
 	FTimerDelegate turnDelegate = FTimerDelegate::CreateUObject(this, &UTask_TurnToTarget::Turn);
+	// 각도가 허용 범위보다 넘는다면 회전 몽타주를 실행
 	if(angle >= turnMontageAngle)
 	{
 		float playTime = owner->GetMesh()->GetAnimInstance()->Montage_Play(turnRightMontage);
+		// 몽타주 실행이 끝나면 재귀로 Turn함수 실행
 		owner->GetWorld()->GetTimerManager().SetTimer(
 			turnTimer,
 			turnDelegate,
@@ -103,9 +107,11 @@ void UTask_TurnToTarget::Turn()
 			false);
 
 	}
+	// 각도가 허용 범위보다 넘는다면 회전 몽타주를 실행
 	else if (angle <= -turnMontageAngle)
 	{
 		float playTime = owner->GetMesh()->GetAnimInstance()->Montage_Play(turnLeftMontage);
+		// 몽타주 실행이 끝나면 재귀로 Turn함수 실행
 		owner->GetWorld()->GetTimerManager().SetTimer(
 			turnTimer,
 			turnDelegate,
@@ -113,6 +119,7 @@ void UTask_TurnToTarget::Turn()
 			false);
 
 	}
+	// 각도가 허용범위 이내라면 보간으로 회전
 	else
 	{
 		bTick = true;

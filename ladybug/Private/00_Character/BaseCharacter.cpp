@@ -29,10 +29,10 @@
 ABaseCharacter::ABaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
 	
 	statusComponent = CreateDefaultSubobject<UStatusComponent>(TEXT("Status"));
 	skillComponent = CreateDefaultSubobject<USkillComponent>(TEXT("SKillComponent"));
+	armyComponent = CreateDefaultSubobject<UArmyComponent>(TEXT("ArmyComponent"));
 
 	WeaponChildActorComponent = CreateDefaultSubobject<UChildActorComponent>(TEXT("Weapon"));
 	WeaponChildActorComponent->SetupAttachment(GetMesh(), FName("Weapon_Socket"));
@@ -51,8 +51,7 @@ ABaseCharacter::ABaseCharacter()
 	HPBarWidgetComponent->SetupAttachment(RootComponent);
 	HPBarWidgetComponent->SetVisibility(false);
 
-	armyComponent = CreateDefaultSubobject<UArmyComponent>(TEXT("ArmyComponent"));
-
+	// 콜리전 설정
 	GetCapsuleComponent()->SetCollisionProfileName("Pawn");
 	GetMesh()->SetCollisionProfileName("BattleCharacter");
 
@@ -71,39 +70,53 @@ void ABaseCharacter::PostInitializeComponents()
 
 	GetMesh()->OnComponentBeginOverlap.AddUniqueDynamic(this, &ABaseCharacter::OnMeshComponentOvelapEvent);
 	OnDead.AddUniqueDynamic(this, &ABaseCharacter::OnDeadEvent);
-
 }
 
 
 float ABaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
 	auto finalHitMontage = hitMontage;
+
 	if(GetMoveState() == EMoveState::FLY)
 	{
-		finalHitMontage = hitOnFlyMontage;
+		finalHitMontage = hitOnFlyMontage;		// 비행중 Hit모션
 	}
 
+	// 나의 방어력에 따른 대미지 감소
 	float finalDamage = DamageAmount;
 	finalDamage = FMath::Clamp(finalDamage - statusComponent->GetStat().Defence, 5.f, finalDamage - statusComponent->GetStat().Defence);
 
+	// 행동 상태에 따른 Damage 설정
 	if (GetActionState() == EActionState::BLOCK)
 	{
+		// 방어 시 스태미너 충분한 지 확인
 		if (statusComponent->CheckStamina(finalDamage))
 		{
+			// 방어 성공 시 스태미너 감소, 대미지 감소, hit모션 설정
 			statusComponent->AddStamina(-finalDamage);
-
 			finalDamage = 0;
 			finalHitMontage = hitBlockMontage;
+			isBlockSuccess = true;
 		}
+		// 방어 시 충분한 스태미너가 없다면
 		else
 		{
+			// 방어 해제
 			SetActionState(EActionState::NORMAL);
+			isBlockSuccess = false;
 		}
-		isBlockSuccess = true;
+	}
+	else if(GetActionState() == EActionState::DODGE)
+	{
+		// 회피 상태일 때 대미지 소멸
+		finalHitMontage = nullptr;
+		finalDamage = 0;
 	}
 	else
 	{
+		// 스킬 사용 중에는 HitMotion 삭제 -> 스킬사용 중에는 피격모션 없음
 		if (ActionState == EActionState::SKILL)
 		{
 			finalHitMontage = nullptr;
@@ -111,6 +124,8 @@ float ABaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 
 		if (hitSound != nullptr)
 		{
+			// HitSound설정
+			// 일정 거리 이상이면 소리 안들리게 설정
 			FSoundAttenuationSettings setting;
 			setting.FalloffDistance = falloffDistance;
 			USoundAttenuation* soundAtt = NewObject<USoundAttenuation>();
@@ -122,20 +137,21 @@ float ABaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 		isBlockSuccess = false;
 	}
 
+	// 피격 몽타주 재생
 	if(finalHitMontage != nullptr)
 	{
 		GetMesh()->GetAnimInstance()->Montage_Play(finalHitMontage);
 	}
 
+	// 데미지 적용
 	statusComponent->AddHP(-finalDamage);
 	
-
 	if (isBlockSuccess)
 	{
 		//SetActionState(EActionState::NORMAL);
 		isBlockSuccess = false;
 	}
-	else
+	else // 방어하지 못했다면 스턴
 	{
 		TakeStun(0.5f);
 	}
@@ -148,6 +164,7 @@ void ABaseCharacter::TakeDamageType(EDamageType damageType, float DamageAmount, 
 {
 	if (ActionState == EActionState::BLOCK)
 	{
+		// 방어를 무시하는 공격을 받았다면 방어 해제
 		if (bBreakBlock)
 		{
 			SetActionState(EActionState::NORMAL);
@@ -156,7 +173,10 @@ void ABaseCharacter::TakeDamageType(EDamageType damageType, float DamageAmount, 
 
 	float damage = TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
+	// 대미지를 입었다면 자신의 MP회복
 	GetStatusComponent()->AddMP(10);
+
+	// 기본 공격으로 대미지를 입었다면 상대 MP회복
 	if(damageType == EDamageType::NORMAL)
 	{
 		if(damage > 0)
@@ -174,6 +194,7 @@ void ABaseCharacter::SetMoveState(EMoveState characterState)
 {
 	MoveState = characterState;
 
+	// 이동 상태에 따른 캐릭터 속도 설정
 	switch (characterState)
 	{
 	case EMoveState::NORMAL:
@@ -241,20 +262,22 @@ void ABaseCharacter::TakeStun(float StunTime)
 
 void ABaseCharacter::OnMeshComponentOvelapEvent(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	// 겹친 곳을 기준으로 타겟을 반대 방향으로 밀어내기
 	if (OtherActor->IsA<ABaseCharacter>())
 	{
+		// 방향 구하기
 		FRotator lookAtRot = GetActorRotation();
 		lookAtRot = (OtherComp->GetComponentLocation()-OverlappedComponent->GetComponentLocation()).Rotation();
-		
 		FVector directionVector = lookAtRot.Vector() * addforce;
 		directionVector.Z = 0.f;
 
+		// 상대 밀어내기
 		Cast<ABaseCharacter>(OtherActor)->GetCharacterMovement()->AddImpulse(directionVector, true);
-		UE_LOG(LogTemp, Log, TEXT("%s"), *GetName());
 	}
 }
 void ABaseCharacter::OnDeadEvent()
 {
+	// 죽으면 GameMode의 변수에 추가 -> 전투 종료 조건을 검사하기 위함
 	if (myTeam == 10)
 	{
 		Cast<ABattleGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->AddDeadMyArmy(this);

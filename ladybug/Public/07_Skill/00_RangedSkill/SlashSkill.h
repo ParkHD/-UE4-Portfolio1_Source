@@ -7,7 +7,7 @@
 #include "SlashSkill.generated.h"
 
 /**
- * 
+ * Animation으로 실행되는 Skill
  */
 UCLASS()
 class LADYBUG_API USlashSkill : public USKillBase
@@ -15,7 +15,7 @@ class LADYBUG_API USlashSkill : public USKillBase
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditAnywhere)
-		float skillFast = 1.0f;
+		float skillFast = 1.0f;				// 애니메이션 실행 속도
 public:
 	virtual void ActivateSkill() override;
 };

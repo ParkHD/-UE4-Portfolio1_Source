@@ -11,18 +11,21 @@ void UNotify_PlaySound::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
 	
 	if(MeshComp != nullptr && soundToPlay != nullptr)
 	{
-		if(bAttenuation)
+		if(bAttenuation)	
 		{
+			// 소리 범위 설정
 			USoundAttenuation* soundAtt = NewObject<USoundAttenuation>();
 			FSoundAttenuationSettings setting;
 			setting.FalloffDistance = falloffDistance;
 			soundAtt->Attenuation = setting;
 
+			// 사운드 재생
 			UGameplayStatics::PlaySoundAtLocation(MeshComp->GetWorld(), soundToPlay, MeshComp->GetComponentLocation(), FRotator::ZeroRotator,
 				1.f, 1.f, 0.f, soundAtt);
 		}
 		else
 		{
+			// 사운드 재생
 			UGameplayStatics::PlaySoundAtLocation(MeshComp->GetWorld(), soundToPlay, MeshComp->GetComponentLocation());
 		}
 	}

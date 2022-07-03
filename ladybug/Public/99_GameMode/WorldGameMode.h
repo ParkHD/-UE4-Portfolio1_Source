@@ -7,7 +7,7 @@
 #include "WorldGameMode.generated.h"
 
 /**
- * 
+ * WorldLevel에서 사용할 게임모드
  */
 UCLASS()
 class LADYBUG_API AWorldGameMode : public AGameModeBase
@@ -21,10 +21,10 @@ protected:
 		class AWorldPlayerController* controller;
 
 public:
-	void OpenBattleLevel(class AWorldMonsterCharacter* BattleTarget);
-	void OpenVillageLevel(FName VillageTagName);
+	void OpenBattleLevel(class AWorldMonsterCharacter* BattleTarget);	// 전장으로 이동
+	void OpenVillageLevel(FName VillageTagName);						// 마을로 이동
 protected:
-	void SaveWorld(FName VillageTagName);
-	void SaveWorld(class AWorldMonsterCharacter* BattleTarget);
-	void LoadWorld();
+	void SaveWorld(FName VillageTagName);								// 마을로 이동 시 데이터 저장
+	void SaveWorld(class AWorldMonsterCharacter* BattleTarget);			// 전장으로 이동 시 데이터 저장
+	void LoadWorld();													// 데이터 불러오기
 };

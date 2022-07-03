@@ -17,7 +17,6 @@ void UBattleResultWidget::NativeConstruct()
 	OnVisibilityChanged.AddUniqueDynamic(this, &UBattleResultWidget::OnVisibilityChangeEvent);
 	Button_OpenLootItemManager->OnClicked.AddUniqueDynamic(this, &UBattleResultWidget::OnOkayClickEvent);
 	Button_ExitBattle->OnClicked.AddUniqueDynamic(this, &UBattleResultWidget::OnExitButtonEvent);
-
 }
 void UBattleResultWidget::OnOkayClickEvent()
 {
@@ -27,6 +26,7 @@ void UBattleResultWidget::OnOkayClickEvent()
 		auto gameInstance = GetGameInstance<UmyGameInstance>();
 		if(gameInstance != nullptr)
 		{
+			// 傈府前包府 芒阑 挪促.
 			controller->OpenItemManger(gameInstance->lootItemList);
 		}
 	}
@@ -39,6 +39,7 @@ void UBattleResultWidget::OnExitButtonEvent()
 
 void UBattleResultWidget::OnVisibilityChangeEvent(ESlateVisibility visible)
 {
+	// 付快胶 目辑 包府
 	if(visible == ESlateVisibility::Visible)
 	{
 		GetOwningPlayer<APlayerController>()->bShowMouseCursor = true;

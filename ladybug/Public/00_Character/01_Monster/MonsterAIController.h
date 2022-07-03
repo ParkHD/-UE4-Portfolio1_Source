@@ -7,9 +7,8 @@
 #include "Perception/AIPerceptionTypes.h"
 #include "MonsterAIController.generated.h"
 
-/**
- * 
- */
+
+// Monster BattleCharacter's controller
 UCLASS()
 class LADYBUG_API AMonsterAIController : public AAIController
 {
@@ -21,16 +20,16 @@ protected:
 
 	virtual void OnPossess(APawn* InPawn) override;
 
-
 protected:
 	UPROPERTY()
 		class AMonsterBaseCharacter* ownerMonster;
 
+	// 델리게이트 바인딩 할 함수
 public:
+	// AIPerception
 	UFUNCTION()
-	void OnActorPerceptionUpdatedEvent(AActor* Actor, FAIStimulus Stimulus);
-	UFUNCTION()
-	void OnPerceptionUpdatedEvent(const TArray<AActor*>& UpdatedActors);
+		void OnActorPerceptionUpdatedEvent(AActor* Actor, FAIStimulus Stimulus);
+	// 블랙보드 MP Value 업데이트
 	UFUNCTION()
 		void SetStatusOnBlackBoard(class UStatusComponent* statusComponent);
 };

@@ -19,6 +19,7 @@ EBTNodeResult::Type UTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerComp,
 	{
 		return EBTNodeResult::Failed;
 	}
+	// 캐릭터에 접근해서 공격몽타주를 플레이하고 쿨타임을 돌린다.
 	owner->GetMesh()->GetAnimInstance()->Montage_Play(owner->GetAttackMontage());
 	owner->SetAttackState(EAttackState::COOLTIME);
 
@@ -27,6 +28,7 @@ EBTNodeResult::Type UTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerComp,
 void UTask_Attack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
+	// 공격 몽타주가 끝나면 종료한다.
 	if (!owner->GetMesh()->GetAnimInstance()->Montage_IsPlaying(owner->GetAttackMontage()))
 	{
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);

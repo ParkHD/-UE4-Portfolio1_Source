@@ -14,14 +14,15 @@ class UInteractionInterface : public UInterface
 };
 
 /**
- * 
+ * 상호작용 인터페이스 클래스
  */
 class LADYBUG_API IInteractionInterface
 {
 	GENERATED_BODY()
-
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
+		
 public:
+	// 타겟의 이름
 	virtual const FText GetName() { return FText::GetEmpty(); };
+	// 타겟과 interaction 함수
 	virtual void InterAction(class APlayerCharacter* caller) {};
 };

@@ -6,9 +6,8 @@
 #include "Animation/AnimNotifies/AnimNotify.h"
 #include "Notify_EndAttack.generated.h"
 
-/**
- * 
- */
+
+// 공격이 끝나면 ActionState::NORMAL로 변경
 UCLASS()
 class LADYBUG_API UNotify_EndAttack : public UAnimNotify
 {

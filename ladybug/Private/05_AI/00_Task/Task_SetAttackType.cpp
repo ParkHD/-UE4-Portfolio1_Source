@@ -11,6 +11,7 @@ EBTNodeResult::Type UTask_SetAttackType::ExecuteTask(UBehaviorTreeComponent& Own
 {
 	Super::ExecuteTask(OwnerComp, NodeMemory);
 
+	// 블랙보드 값 변경
 	OwnerComp.GetBlackboardComponent()->SetValueAsEnum("AttackType", (uint8)AttackState);
 
 	AMonsterBaseCharacter* owner = Cast<AMonsterBaseCharacter>(OwnerComp.GetAIOwner()->GetPawn());

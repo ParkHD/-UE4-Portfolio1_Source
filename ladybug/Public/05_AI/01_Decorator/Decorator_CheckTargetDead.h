@@ -7,7 +7,7 @@
 #include "Decorator_CheckTargetDead.generated.h"
 
 /**
- * 
+ * 타겟이 죽었는지 확인
  */
 UCLASS()
 class LADYBUG_API UDecorator_CheckTargetDead : public UBTDecorator

@@ -6,9 +6,7 @@
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "NotifyState_ShootArrow.generated.h"
 
-/**
- * 
- */
+// 화살 발사하는 NotifyState
 UCLASS()
 class LADYBUG_API UNotifyState_ShootArrow : public UAnimNotifyState
 {
@@ -19,15 +17,15 @@ protected:
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)override;
 protected:
 	UPROPERTY(EditAnywhere)
-		class ABaseCharacter* owner;
+		class ABaseCharacter* owner;	// owner
+
 	UPROPERTY(VisibleAnywhere)
-		FVector shootDir;
-	
+		FVector shootDir;			// 화살 날아갈 방향
 	UPROPERTY(EditAnywhere)
-		FName SpawnSocketName;
+		FName SpawnSocketName;		// 화살 생성 위치
 	UPROPERTY(EditAnywhere)
-		float ProjectileSpeed;
+		float ProjectileSpeed;		// 화살 속도
 
 	UPROPERTY(EditAnywhere)
-		float Accuracy;
+		float Accuracy;				// 정확도
 };

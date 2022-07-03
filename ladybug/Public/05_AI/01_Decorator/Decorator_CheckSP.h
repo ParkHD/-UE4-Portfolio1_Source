@@ -7,7 +7,7 @@
 #include "Decorator_CheckSP.generated.h"
 
 /**
- * 
+ * 충분한 Stamina가 있는지 확인
  */
 UCLASS()
 class LADYBUG_API UDecorator_CheckSP : public UBTDecorator_BlackboardBase
@@ -19,7 +19,7 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere)
-		float stamina = 0.f;
+		float stamina = 0.f;	// 허용 스태미너 기준
 
 protected:
 	virtual bool CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const override;

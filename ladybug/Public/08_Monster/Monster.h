@@ -8,16 +8,20 @@
 #include "GameplayTagContainer.h"
 #include "00_Character/00_Player/Component/StatusComponent.h"
 #include "Monster.generated.h"
+
+// 몬스터가 드랍하는 아이템 정보
 USTRUCT(BlueprintType)
 struct FDropItem
 {
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<class UItem> dropItem;
+		TSubclassOf<class UItem> dropItem;	// 드랍하는 아이템
 	UPROPERTY(EditAnywhere)
-		float dropPercentage;
+		float dropPercentage;				// 드랍 확률
 };
+
+// 몬스터 정보
 USTRUCT(BlueprintType)
 struct FMonsterInfo : public FTableRowBase
 {
@@ -27,23 +31,23 @@ public:
 		FGameplayTag monster_Tag;
 
 	UPROPERTY(EditAnywhere)
-		FString monster_Name;
+		FString monster_Name;							// 몬스터 이름
 	UPROPERTY(EditAnywhere)
-		class UTextureRenderTarget2D* monster_Image;
+		class UTextureRenderTarget2D* monster_Image;	// 몬스터 프리뷰 이미지
 	UPROPERTY(EditAnywhere)
-		class UTexture2D* monster_Icon;
+		class UTexture2D* monster_Icon;					// 몬스터 아이콘
 
 	UPROPERTY(EditAnywhere)
-		FString monster_Description;
+		FString monster_Description;					// 몬스터 설명
 
 	UPROPERTY(EditAnywhere)
-		FStat monster_Stat;
+		FStat monster_Stat;								// 몬스터 스텟
 	UPROPERTY(EditAnywhere)
-		TArray<TSubclassOf<class USKillBase>> monster_Skill;
+		TArray<TSubclassOf<class USKillBase>> monster_Skill;	// 몬스터 스킬
 	UPROPERTY(EditAnywhere)
-		TArray<FDropItem> monster_Dropitem;
+		TArray<FDropItem> monster_Dropitem;						// 몬스터 드랍 아이템List
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<class AMonsterBaseCharacter> monster_BP;
+		TSubclassOf<class AMonsterBaseCharacter> monster_BP;	// 몬스터 BattleCharacter
 };
 
 UCLASS(Blueprintable)
@@ -64,10 +68,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 		int32 count = 1;
 
-
 public:
 	const FMonsterInfo* GetMonsterInfo();
 	const int32 GetCount() { return count; }
-	void SetCount(float MonCount) { count = MonCount; }
+	void SetCount(float MonCount) { count = MonCount; }				// 유닛 개수 설정
 	const FName GetTagName() { return monsterTag.GetTagName(); }
 };

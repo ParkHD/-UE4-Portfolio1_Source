@@ -6,9 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MainWidget.generated.h"
 
-/**
- * 
- */
+// WorldCharcter에서 사용할 MainWidget
 UCLASS()
 class LADYBUG_API UMainWidget : public UUserWidget
 {
@@ -17,13 +15,13 @@ protected:
 
 protected:
 	UPROPERTY()
-		class UEquipInventoryWidget* UMG_Inventory;
+		class UEquipInventoryWidget* UMG_Inventory;	// 인벤토리 창
 	UPROPERTY()
-		class UArmyManagerWidget* UMG_ArmyManager;
+		class UArmyManagerWidget* UMG_ArmyManager;	// 부대관리 창
 	UPROPERTY(Meta = (BindWidget))
-		class UBattleWidget* UMG_Battle;
+		class UBattleWidget* UMG_Battle;			// 전투진입 창
 	UPROPERTY(Meta = (BindWidget))
-		class UVillageWidget* UMG_VillageWidget;
+		class UVillageWidget* UMG_VillageWidget;	// 마을진입 창
 public:
 	class UEquipInventoryWidget* GetUMG_Inventory() { return UMG_Inventory; }
 	class UArmyManagerWidget* GetUMG_ArmyManager() { return UMG_ArmyManager; }

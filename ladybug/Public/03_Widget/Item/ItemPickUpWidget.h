@@ -6,9 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include "ItemPickUpWidget.generated.h"
 
-/**
- * 
- */
+// 현재는 사용안함
+// 아이템 근처에 가면 나올 위젯
 UCLASS()
 class LADYBUG_API UItemPickUpWidget : public UUserWidget
 {

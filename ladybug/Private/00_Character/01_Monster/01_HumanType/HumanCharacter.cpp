@@ -20,8 +20,6 @@ AHumanCharacter::AHumanCharacter()
 void AHumanCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-
 }
 void AHumanCharacter::PostInitializeComponents()
 {
@@ -44,6 +42,7 @@ void AHumanCharacter::SetActionState(EActionState actionState)
 	switch (actionState)
 	{
 	case EActionState::NORMAL:
+		// 활 무기를 사용 중일 때 보조무기인 화살 숨기기
 		if (EquipmentComponent->GetEquippedWeapon()->GetItemInfo<FWeaponInformation>()->WeaponType == EWeaponType::BOW)
 		{
 			if (ShieldChildActorComponent->GetChildActor() != nullptr)
@@ -53,6 +52,7 @@ void AHumanCharacter::SetActionState(EActionState actionState)
 		}
 		break;
 	case EActionState::ATTACK:
+		// 활 무기를 사용 하여 공격중일 떄 보조무기인 화살 Visible 활성화
 		if (EquipmentComponent->GetEquippedWeapon()->GetItemInfo<FWeaponInformation>()->WeaponType == EWeaponType::BOW)
 		{
 			if (ShieldChildActorComponent->GetChildActor() != nullptr)
@@ -63,7 +63,6 @@ void AHumanCharacter::SetActionState(EActionState actionState)
 		break;
 	case EActionState::BLOCK:
 		break;
-
 
 
 	default:

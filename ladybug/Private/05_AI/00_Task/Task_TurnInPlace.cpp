@@ -32,10 +32,9 @@ void UTask_TurnInPlace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
+	// 타겟과의 각도구하기
 	FRotator newRotation = owner->GetActorRotation();
 	newRotation.Yaw = (target->GetActorLocation() - owner->GetActorLocation()).Rotation().Yaw;
-
-	//UE_LOG(LogTemp, Log, TEXT("%f"), newRotation.Yaw);
 	float angle = newRotation.Yaw - owner->GetActorRotation().Yaw;
 	if (angle > 180)
 	{
@@ -46,7 +45,7 @@ void UTask_TurnInPlace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 		angle = angle + 360.f;
 	}
 
-
+	// 각도가 허용범위 이내면 종료
 	if (FMath::Abs(angle) <= allowableAngle)
 	{
 		owner->turnDir = ETurnDir::NORMAL;
@@ -55,6 +54,7 @@ void UTask_TurnInPlace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 	}
 	else
 	{
+		// 캐릭터의 회전방향 변수 설정 -> AnimInstance에서 회전 애니메이션 실행
 		if (angle >= allowableAngle)
 		{
 			owner->turnDir = ETurnDir::RIGHTTURN;
@@ -68,6 +68,7 @@ void UTask_TurnInPlace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 			owner->turnDir = ETurnDir::NORMAL;
 		}
 
+		// 실제 캐릭터 회전
 		auto interpRot = FMath::RInterpTo(owner->GetActorRotation(), newRotation, DeltaSeconds, turnSpeed);
 		owner->SetActorRotation(interpRot);
 	}

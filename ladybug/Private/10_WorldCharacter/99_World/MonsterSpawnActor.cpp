@@ -26,8 +26,10 @@ void AMonsterSpawnActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// 지역의 몬스터 최대 개수 이하인지 확인
 	if(spawnedMonsters.Num() < monsterCount)
 	{
+		// 쿨타임이 지나면 몬스터 소환
 		coolTime += DeltaTime;
 		if (coolTime >= spawnCoolTime)
 		{
@@ -39,15 +41,19 @@ void AMonsterSpawnActor::Tick(float DeltaTime)
 
 void AMonsterSpawnActor::SpawnMonster()
 {
+	// 스폰할 몬스터 랜덤으로 설정
 	int32 randIndex = FMath::RandRange(0, spawnMonsterBP.Num() - 1);
 
+	// 스폰할 위치 정해진 범위 안에 랜덤으로 설정
 	float spawnLocationX = FMath::RandRange(GetActorLocation().X - spawnRange, GetActorLocation().X + spawnRange);
 	float spawnLocationY = FMath::RandRange(GetActorLocation().Y - spawnRange, GetActorLocation().Y + spawnRange);
 	FVector SpawnLocation = FVector(spawnLocationX, spawnLocationY, GetActorLocation().Z);
 
+	// 몬스터 스폰
 	auto monster = GetWorld()->SpawnActor<AWorldMonsterCharacter>(spawnMonsterBP[randIndex], SpawnLocation, FRotator::ZeroRotator);
 	if(monster != nullptr)
 	{
+		// 몬스터를 지역Actor에 상속시키기
 		monster->SetSpawnLocationIndex(locationIndex);
 		spawnedMonsters.Emplace(monster);
 	}

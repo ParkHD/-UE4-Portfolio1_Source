@@ -37,6 +37,7 @@ AProjectileActor::AProjectileActor()
 	audioComponent->SetupAttachment(RootComponent);
 	audioComponent->bOverrideAttenuation = true;
 
+	// 이동방향으로 회전
 	projectileComponent->bRotationFollowsVelocity = true;
 }
 
@@ -47,6 +48,7 @@ void AProjectileActor::PostInitializeComponents()
 	sphereComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &AProjectileActor::OnComponentBeginOverlapEvent);
 	if(bLifeSpan)
 	{
+		// 생명주기 설정
 		SetLifeSpan(lifeSpanValue);
 	}
 }
@@ -85,16 +87,10 @@ void AProjectileActor::OnComponentBeginOverlapEvent(UPrimitiveComponent* Overlap
 		if (!hitActors.Contains(OtherActor))
 		{
 			hitActors.Emplace(OtherActor);
+			// overlap 효과 재생
 			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), hitParticle, SweepResult.Location, FRotator::ZeroRotator, true);
-			/// <summary>
-			/// 
-			/// </summary>
-			/// <param name="OverlappedComponent"></param>
-			/// <param name="OtherActor"></param>
-			/// <param name="OtherComp"></param>
-			/// <param name="OtherBodyIndex"></param>
-			/// <param name="bFromSweep"></param>
-			/// <param name="SweepResult"></param>
+
+			// 멀티공격이 아니라면 콜리전을 꺼서 다중공격 방지
 			if(bHitSingle)
 			{
 				sphereComponent->SetCollisionProfileName("NoCollision");
@@ -104,6 +100,7 @@ void AProjectileActor::OnComponentBeginOverlapEvent(UPrimitiveComponent* Overlap
 
 			if (OtherActor->IsA<ABaseCharacter>())
 			{
+				// 캐릭터라면 대미지 주기
 				auto targetCharacter = Cast<ABaseCharacter>(OtherActor);
 				if (targetCharacter != myCharacter && targetCharacter->GetGenericTeamId() != myCharacter->GetGenericTeamId())
 				{
@@ -116,6 +113,7 @@ void AProjectileActor::OnComponentBeginOverlapEvent(UPrimitiveComponent* Overlap
 
 			if (bAttachToTarget)
 			{
+				// 타겟에 붙이기(화살이 꽂히도록)
 				this->AttachToComponent(OtherComp, FAttachmentTransformRules::KeepWorldTransform, SweepResult.BoneName);
 			}
 		}

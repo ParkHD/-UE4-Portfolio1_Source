@@ -6,9 +6,8 @@
 #include "Animation/AnimInstance.h"
 #include "WorldPlayerAnimInstance.generated.h"
 
-/**
- * 
- */
+
+// Player의 WorldCharacter의 AnimInstance
 UCLASS()
 class LADYBUG_API UWorldPlayerAnimInstance : public UAnimInstance
 {
@@ -17,10 +16,10 @@ protected:
 	virtual void NativeInitializeAnimation()override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds)override;
 
-
 protected:
 	UPROPERTY()
 		class AWorldBaseCharacter* owner;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		float playerSpeed;
+		float playerSpeed;					// 이동 속도
 };

@@ -6,9 +6,8 @@
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "WeaponCollisionNotifyState.generated.h"
 
-/**
- * 
- */
+
+// 공격 시 무기의 콜리전 설정
 UCLASS()
 class LADYBUG_API UWeaponCollisionNotifyState : public UAnimNotifyState
 {
@@ -18,5 +17,5 @@ protected:
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)override;
 
 protected:
-	class ABaseCharacter* owner;
+	class ABaseCharacter* owner;	// owner
 };

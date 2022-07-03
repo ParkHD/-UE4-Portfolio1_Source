@@ -21,6 +21,7 @@ bool UDecorator_CheckSP::CalculateRawConditionValue(UBehaviorTreeComponent& Owne
 	ABaseCharacter* owner = Cast<ABaseCharacter>(obj);
 	if (owner != nullptr)
 	{
+		// 자신의 스태미너가 충분히 없다면 false
 		if (owner->GetStatusComponent()->CheckStamina(stamina))
 		{
 			return true;

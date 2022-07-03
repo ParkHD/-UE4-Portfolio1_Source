@@ -10,9 +10,11 @@ bool UDecorator_CheckDegree::CalculateRawConditionValue(UBehaviorTreeComponent& 
 	auto obj = OwnerComp.GetBlackboardComponent()->GetValueAsObject(GetSelectedBlackboardKey());
 	if (obj != nullptr)
 	{
+		
 		AActor* target = Cast<AActor>(obj);
 		if (target != nullptr)
 		{
+			// 타겟과의 각도를 구한다.
 			FRotator newRotate = (target->GetActorLocation() - OwnerComp.GetAIOwner()->GetPawn()->GetActorLocation()).Rotation();
 			float angle = newRotate.Yaw - OwnerComp.GetAIOwner()->GetPawn()->GetActorRotation().Yaw;
 			if (angle > 180)
@@ -23,6 +25,8 @@ bool UDecorator_CheckDegree::CalculateRawConditionValue(UBehaviorTreeComponent& 
 			{
 				angle = angle + 360.f;
 			}
+
+			// 타겟과의 각도가 attackRange보다 작으면 true
 			if (FMath::Abs(angle) <= attackRange)
 			{
 				return true;

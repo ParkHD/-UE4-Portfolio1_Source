@@ -119,7 +119,7 @@ APlayerCharacter::APlayerCharacter()
 		GetMesh()->SetAnimInstanceClass(defaultAnimationBP->GetAnimBlueprintGeneratedClass());
 	}
 
-
+	// 팀 설정
 	SetGenericTeamId(FGenericTeamId(5));
 }
 
@@ -131,23 +131,13 @@ void APlayerCharacter::BeginPlay()
 	SetMoveState(EMoveState::NORMAL);
 }
 
-void APlayerCharacter::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-
-
-}
-
-void APlayerCharacter::PossessedBy(AController* NewController)
-{
-	Super::PossessedBy(NewController);
-	
-}
 
 void APlayerCharacter::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 
+	// SetMasterPoseComponent : OnConstruction에서 구현하기
+	// 애니메이션 설정
 	HeadMeshComponent->SetMasterPoseComponent(GetMesh());
 	HelmetMeshComponent1->SetMasterPoseComponent(GetMesh());
 
@@ -179,13 +169,14 @@ void APlayerCharacter::OnConstruction(const FTransform& Transform)
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+
+	// 상호작용 가능한지 확인하기
 	auto controller = GetController<ACustomController>();
 	if (controller != nullptr)
 	{
+		// 카메라를 기준으로 Forward방향으로 Ray
 		FVector start = Camera->GetComponentLocation();
 		FVector end = start + GetControlRotation().Vector() * 1000.f;
-
 		TArray<TEnumAsByte<EObjectTypeQuery>> objects;
 		objects.Emplace(UEngineTypes::ConvertToObjectType(ECC_Pawn));
 		FHitResult hit;
@@ -200,6 +191,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 			hit,
 			true))
 		{
+			// 상호작용 가능한 Actor인지 확인
 			auto interactionTarget = Cast<IInteractionInterface>(hit.GetActor());
 			if (interactionTarget != nullptr)
 			{
@@ -207,10 +199,12 @@ void APlayerCharacter::Tick(float DeltaTime)
 				{
 					controller->SetUpTargetName(interactionTarget->GetName());
 					controller->TurnOnInteractKey(true);
+					// 현재 보고있는 Actor(상호작용 가능한 타겟) 저장
 					interactAbleTarget = hit.GetActor();
 				}
 			}
 		}
+		// 카메라를 돌려서 Ray가 Actor를 벗어나면 상호작용 타겟 초기화
 		else
 		{
 			controller->TurnOnInteractKey(false);
@@ -218,6 +212,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 		}
 	}
 
+	// 타겟과의 상호작용을 시작하면 타겟 방향으로 카메라 이동 및 회전
 	if(isInteract)
 	{
 		if(interactAbleTarget != nullptr)
@@ -230,13 +225,15 @@ void APlayerCharacter::Tick(float DeltaTime)
 			Camera->SetWorldRotation(FMath::RInterpTo(Camera->GetComponentRotation(), dirRotation, DeltaTime, interpSpeed));
 		}
 	}
+	// 조준 시 카메라 이동 및 회전, Aim 위젯 활성화
 	else if(isAimming)
 	{
 		SpringArm->TargetArmLength = FMath::FInterpTo(SpringArm->TargetArmLength, 200, DeltaTime, interpSpeed);
-		//SpringArm->SocketOffset = FMath::VInterpTo(SpringArm->SocketOffset, FVector(0, 80, 0), DeltaTime, interpSpeed);
 		controller->TurnOnAimWidget(true);
+		// Aim 위젯이 점점 작아지게 -> 명중률 증가
 		controller->SetUpAimSize(FMath::Vector2DInterpTo(controller->GetAimWidgetSize(), FVector2D(50, 50), DeltaTime, interpSpeed));
 	}
+	// 카메라의 위치 및 회전 원래대로 복구
 	else
 	{
 		SpringArm->TargetArmLength = FMath::FInterpTo(SpringArm->TargetArmLength, originArmlength, DeltaTime, interpSpeed);
@@ -281,15 +278,27 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAction("Option", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressOption);
 	PlayerInputComponent->BindAxis("SwapWeapon", this, &APlayerCharacter::SawpWeapon);
 
+	PlayerInputComponent->BindAction("UpKey", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressUpKey);
+	PlayerInputComponent->BindAction("UpKey", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseUpKey);
+	PlayerInputComponent->BindAction("DownKey", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressDownKey);
+	PlayerInputComponent->BindAction("DownKey", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseDownKey);
+	PlayerInputComponent->BindAction("LeftKey", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressLeftKey);
+	PlayerInputComponent->BindAction("LeftKey", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseLeftKey);
+	PlayerInputComponent->BindAction("RightKey", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressRightKey);
+	PlayerInputComponent->BindAction("RightKey", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseRightKey);
 
+	PlayerInputComponent->BindAction("Dodge", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressDodge);
 }
 
 void APlayerCharacter::MoveForward(float newAxisValue)
 {
+	// 공격 or 피격중에 이동 불가
 	if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(attackMontage))
 		return;
 	if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(hitMontage))
 		return;
+
+	// 점프 or 스킬 사용중에 이동 불가
 	if (newAxisValue != 0.0f && MoveState != EMoveState::JUMP &&  ActionState != EActionState::SKILL)
 	{
 		if(InputComponent->GetAxisValue("MoveForward") < 0)
@@ -322,12 +331,11 @@ void APlayerCharacter::Turn(float newAxisValue)
 void APlayerCharacter::Jump()
 {
 	if (MoveState != EMoveState::JUMP)
-	{
 		Super::Jump();
-	}
 }
 void APlayerCharacter::PressRun()
 {
+	// MoveState 변경
 	if(MoveState != EMoveState::JUMP)
 		SetMoveState(EMoveState::RUN);
 }
@@ -344,6 +352,7 @@ void APlayerCharacter::PressBlock()
 		return;
 	if(GetEquipmentComponent()->GetEquippedSubWeapon() != nullptr)
 	{
+		// 방패를 장착하고 있는지 확인
 		if (GetEquipmentComponent()->GetEquippedSubWeapon()->GetItemInfo<FWeaponInformation>()->WeaponType == EWeaponType::SHIELD
 			&& ActionState == EActionState::NORMAL)
 		{
@@ -368,20 +377,25 @@ void APlayerCharacter::PickUp()
 
 void APlayerCharacter::PressAttack()
 {
+	// 스킬 사용 중 Attack 불가
 	if (ActionState == EActionState::SKILL)
 		return;
+	// 공격 쿨타임이 돌았는 지 확인 및 무기를 장착 하고 있는지 확인
 	if(AttackState == EAttackState::READY && GetEquipmentComponent()->GetEquippedWeapon() != nullptr)
 	{
 		SetActionState(EActionState::ATTACK);
 
+		// 무기에 따른 다른 공격
 		if (EquipmentComponent->GetEquippedWeapon()->GetItemInfo<FWeaponInformation>()->WeaponType == EWeaponType::BOW)
 		{
+			// 보조무기로 화살을 장착했는 지 확인
 			if(GetEquipmentComponent()->GetEquippedSubWeapon() != nullptr)
 			{
 				SetActionState(EActionState::AIM);
 
 				if (ShieldChildActorComponent->GetChildActor() != nullptr)
 				{
+					// 화살 장전 시 화살 Actor보이기
 					ShieldChildActorComponent->GetChildActor()->SetActorHiddenInGame(false);
 				}
 				isAttackPressed = true;
@@ -390,8 +404,10 @@ void APlayerCharacter::PressAttack()
 		}
 		else
 		{
+			// 근점 공격은 몽타주로 실행 따라서 몽타주가 있는지 확인
 			if (attackMontage != nullptr && ActionState != EActionState::SKILL)
 			{
+				// 첫 공격이 아니라면 Combo 공격
 				if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(attackMontage))
 				{
 					bInputComboAttack = true;
@@ -403,7 +419,6 @@ void APlayerCharacter::PressAttack()
 			}
 		}
 	}
-	
 }
 void APlayerCharacter::ReleaseAttack()
 {
@@ -412,16 +427,12 @@ void APlayerCharacter::ReleaseAttack()
 		// 원거리 무기를 장착하고 있을 때
 		if (EquipmentComponent->GetEquippedWeapon()->GetItemInfo<FWeaponInformation>()->WeaponType == EWeaponType::BOW)
 		{
+			// 공격이 완료가 됬다면
 			if(ActionState == EActionState::AIM)
 			{
+				// 공격 쿨타임 적용
 				SetAttackState(EAttackState::COOLTIME);
-				auto info = EquipmentComponent->GetEquippedSubWeapon()->GetItemInfo<FWeaponInformation>();
-				if(info != nullptr)
-				{
-					//auto arrow = GetWorld()->SpawnActor<AProjectileActor>(info->projectileActor, GetMesh()->GetSocketTransform(info->equipSocketName));
-
-					//arrow->GetProjectileComponent()->Velocity = Controller->GetControlRotation().Vector() * 1000;
-				}
+			
 				FTimerHandle coolTimer;
 				FTimerDelegate coolDelegate = FTimerDelegate::CreateUObject(this, &ABaseCharacter::SetAttackState, EAttackState::READY);
 				GetWorldTimerManager().SetTimer(
@@ -430,6 +441,7 @@ void APlayerCharacter::ReleaseAttack()
 					2.f,
 					false);
 			}
+			// 공격이 중간에 취소가 됬다면
 			else
 			{
 				if (ShieldChildActorComponent->GetChildActor() != nullptr)
@@ -449,6 +461,7 @@ void APlayerCharacter::PressSkill1()
 {
 	if(skillComponent->SkillUsable(0))
 	{
+		// 스킬 사용 중이거나 공격중엔 스킬 사용 불가
 		if (ActionState != EActionState::SKILL && ActionState != EActionState::ATTACK)
 		{
 			skillComponent->UseSkill(0);
@@ -460,6 +473,7 @@ void APlayerCharacter::PressSkill2()
 {
 	if (skillComponent->SkillUsable(1))
 	{
+		// 스킬 사용 중이거나 공격중엔 스킬 사용 불가
 		if (ActionState != EActionState::SKILL && ActionState != EActionState::ATTACK)
 		{
 			skillComponent->UseSkill(1);
@@ -475,7 +489,7 @@ void APlayerCharacter::PressInteract()
 		if (target != nullptr)
 		{
 			isInteract = true;
-			target->InterAction(this);
+			target->InterAction(this);	// (인터페이스 함수)
 		}
 	}
 }
@@ -488,18 +502,79 @@ void APlayerCharacter::SawpWeapon(float newAxisValue)
 {
 	if(newAxisValue >= 1.f)
 	{
-		UE_LOG(LogTemp, Log, TEXT("UP"));
 		EquipmentComponent->SwapWeaponUp(true);
 	}
 	else if(newAxisValue <= -1.f)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Down"));
-
 		EquipmentComponent->SwapWeaponUp(false);
 	}
 }
+
+void APlayerCharacter::PressUpKey()
+{
+	bUpKey = true;
+}
+
+void APlayerCharacter::ReleaseUpKey()
+{
+	bUpKey = false;
+}
+
+void APlayerCharacter::PressDownKey()
+{
+	bDownKey = true;
+}
+
+void APlayerCharacter::ReleaseDownKey()
+{
+	bDownKey = false;
+}
+
+void APlayerCharacter::PressLeftKey()
+{
+	bLeftKey = true;
+}
+
+void APlayerCharacter::ReleaseLeftKey()
+{
+	bLeftKey = false;
+}
+
+void APlayerCharacter::PressRightKey()
+{
+	bRightKey = true;
+}
+
+void APlayerCharacter::ReleaseRightKey()
+{
+	bRightKey = false;
+}
+
+void APlayerCharacter::PressDodge()
+{
+	if (ActionState == EActionState::DODGE)
+		return;
+	class UAnimMontage* dodgeMontage = nullptr;
+
+	// 어느 방향키가 입력 되고 있는 지에 따라 다른 회피 몽타주 설정
+	if (bUpKey)
+		dodgeMontage = ForwardDodgeMontage;
+	else if (bDownKey)
+		dodgeMontage = BackDodgeMontage;
+	else if (bLeftKey)
+		dodgeMontage = LeftDodgeMontage;
+	else if (bRightKey)
+		dodgeMontage = RightDodgeMontage;
+
+	if(dodgeMontage != nullptr)
+	{
+		GetMesh()->GetAnimInstance()->Montage_Play(dodgeMontage, 1.2f);
+	}
+}
+
 float APlayerCharacter::GetMoveDirection()
 {
+	// Atan를 이용한 이동 방향 구하기
 	float x = GetVelocity().Y;
 	float y = GetVelocity().X;
 
@@ -508,6 +583,7 @@ float APlayerCharacter::GetMoveDirection()
 
 	moveDirection -= GetActorRotation().Yaw;
 
+	// 각도 범위를 -180 ~ 180으로 설정
 	if (moveDirection > 180.0f)
 	{
 		moveDirection -= 360.0f;
@@ -516,7 +592,7 @@ float APlayerCharacter::GetMoveDirection()
 	{
 		moveDirection += 360.0f;
 	}
-
+	
 	return moveDirection;
 }
 void APlayerCharacter::SetAttackMontage(class UAnimMontage* montage)
@@ -536,5 +612,5 @@ void APlayerCharacter::SetHitMontage(class UAnimMontage* montage)
 void APlayerCharacter::SetCharacter(AWorldBaseCharacter* WorldCharacter)
 {
 	EquipmentComponent->SetBattleCharacter(WorldCharacter->GetEquipmentComponent());
-	statusComponent->SetBattleCharacter(WorldCharacter->GetStatusComponent());
+	statusComponent->SetBattleCharacterStat(WorldCharacter->GetStatusComponent());
 }

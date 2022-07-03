@@ -20,6 +20,7 @@ void UArmyInfoWidget::SetUp(class UArmyListSlotWidget* selectedSlot)
 	{
 		Init();
 
+		// 캐릭터의 정보를 가지고 위젯을 업데이트한다.
 		const FMonsterInfo* monsterInfo = selectedSlot->GetUnit()->GetMonsterInfo();
 		if (monsterInfo != nullptr)
 		{
@@ -37,6 +38,7 @@ void UArmyInfoWidget::SetUp(class UArmyListSlotWidget* selectedSlot)
 			TextBlock_Damage->SetText(FText::AsNumber(monsterInfo->monster_Stat.Damage));
 			TextBlock_Defence->SetText(FText::AsNumber(monsterInfo->monster_Stat.Defence));
 
+			// 스킬이 있는지 확인하고 있으면 위젯에 추가한다.
 			FString skillList = "";
 			for (TSubclassOf<class USKillBase> skill : monsterInfo->monster_Skill)
 			{

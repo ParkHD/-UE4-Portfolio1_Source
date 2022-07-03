@@ -16,6 +16,7 @@ EBTNodeResult::Type UTask_TagetOff::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 	}
 
+	// 블랙보드 값 초기화
 	OwnerComp.GetBlackboardComponent()->SetValueAsObject("Target", nullptr);
 	OwnerComp.GetBlackboardComponent()->SetValueAsFloat("TargetDistance", 0.f);
 

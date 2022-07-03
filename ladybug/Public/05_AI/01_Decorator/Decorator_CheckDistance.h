@@ -7,7 +7,7 @@
 #include "Decorator_CheckDistance.generated.h"
 
 /**
- * 
+ * 타겟과의 거리 계산
  */
 UCLASS()
 class LADYBUG_API UDecorator_CheckDistance : public UBTDecorator
@@ -20,7 +20,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 	struct FBlackboardKeySelector BlackBoardKey;
 	UPROPERTY(EditAnywhere)
-	float attackRange;
+	float attackRange;			// 허용 거리
 
 public:
 	FName GetSelectedBlackboardKey() const;

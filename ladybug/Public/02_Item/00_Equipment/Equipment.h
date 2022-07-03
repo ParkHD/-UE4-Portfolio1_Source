@@ -8,9 +8,7 @@
 
 #include "Equipment.generated.h"
 
-/**
- * 
- */
+// 장비 아이템
 UCLASS()
 class LADYBUG_API UEquipment : public UItem
 {
@@ -18,9 +16,9 @@ class LADYBUG_API UEquipment : public UItem
 public:
 	UEquipment();
 protected:
-	FStat equipmentStat;
+	FStat equipmentStat;		// 장비 능력치
 public:
 	FStat GetStat() { return equipmentStat; }
 public:
-	virtual void ItemStatSetUp() override;
+	virtual void ItemStatSetUp() override;	// 장비 능력치 설정
 };

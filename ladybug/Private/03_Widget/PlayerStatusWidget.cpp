@@ -12,6 +12,7 @@ void UPlayerStatusWidget::NativeConstruct()
 }
 void UPlayerStatusWidget::Init()
 {
+	// ProgressBar ÃÊ±âÈ­
 	ProgressBar_HP->SetPercent(1.f);
 	ProgressBar_SP->SetPercent(1.f);
 	ProgressBar_MP->SetPercent(0.f);

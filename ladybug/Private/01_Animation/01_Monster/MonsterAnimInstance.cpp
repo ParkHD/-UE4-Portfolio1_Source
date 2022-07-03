@@ -11,9 +11,12 @@ void UMonsterAnimInstance::NativeInitializeAnimation()
 }
 void UMonsterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
+	// 변수 업데이트
 	if (owner != nullptr)
 	{
 		moveSpeed = owner->GetCharacterMovement()->Velocity.Size();
+		moveDir = owner->GetMoveDirection();
+
 		characterState = owner->GetCharacterMovement()->MovementMode;
 		
 		turnDir = owner->turnDir;

@@ -20,6 +20,7 @@ void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
+	// 변수 업데이트
 	if (player != nullptr && player->InputComponent)
 	{
 		playerSpeed = player->GetVelocity().Size();

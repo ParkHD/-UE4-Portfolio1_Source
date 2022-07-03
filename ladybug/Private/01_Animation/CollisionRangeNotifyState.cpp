@@ -18,7 +18,7 @@ void UCollisionRangeNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, U
 		{
 			startLocation = owner->GetActorLocation();
 			startRotator = owner->GetActorRotation();
-			angle = -range;
+			angle = -range;			// 콜리전이 생성될 시작 각도
 		}
 	}
 
@@ -28,13 +28,13 @@ void UCollisionRangeNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UA
 	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime);
 	if (owner != nullptr)
 	{
+		// collision의 EndLocation 구하기
 		FRotator tempRotator = startRotator;
 		tempRotator.Yaw = angle;
-		FRotator dirRotator = tempRotator + startRotator;
-		
+		FRotator dirRotator = tempRotator + startRotator;	// 캐릭터기준으로 회전값 z축을 angle각도 회전시켰을 때 Rotator
 		FVector endLocation = dirRotator.Vector()* 400.f + owner->GetActorLocation();
 
-
+		// 현재 angle각도에 콜리전 생성
 		TArray<FHitResult> hits;
 		FCollisionQueryParams Params;
 		TArray<TEnumAsByte<EObjectTypeQuery>> objects;
@@ -60,12 +60,13 @@ void UCollisionRangeNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UA
 					if (owner->AddHitActors(target))
 					{
 						FDamageEvent damageEvent;
-						// 스킬 대미지 계산 및 적용
 						auto skillInfo = owner->GetSkillComponent()->GetSkillInfo(skill_Tag);
 						if (skillInfo != nullptr)
 						{
+							// 대미지 계산
 							float ownerDamage = owner->GetStatusComponent()->GetStat().Damage;
 							float skillDamage = ownerDamage * skillInfo->skill_Damage / 100;
+							// Hit된 Actor에 대미지 적용
 							target->TakeDamageType(EDamageType::SKILL, skillDamage, damageEvent, target->GetController(), target);
 						}
 					}
@@ -73,8 +74,8 @@ void UCollisionRangeNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UA
 			}
 		}
 
+		// angle 업데이트
 		angle = FMath::FInterpTo(angle, range, FrameDeltaTime, interpSpeed);
-		//UE_LOG(LogTemp, Log, TEXT("angle : %f"), angle);
 	}
 }
 

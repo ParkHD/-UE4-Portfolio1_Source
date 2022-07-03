@@ -30,7 +30,6 @@ void USkillComponent::BeginPlay()
 	{
 		AddSkill(skill.GetDefaultObject());
 	}
-	
 }
 
 void USkillComponent::BeginDestroy()
@@ -45,6 +44,7 @@ void USkillComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	// 스킬이 사용가능 한지 확인하고 스킬 위젯 업데이트
 	if(SkillUsable(0))
 	{
 		UpdateSkill1Able.Broadcast(true);
@@ -53,6 +53,7 @@ void USkillComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	{
 		UpdateSkill1Able.Broadcast(false);
 	}
+	// 스킬이 사용가능 한지 확인하고 스킬 위젯 업데이트
 	if (SkillUsable(1))
 	{
 		UpdateSkill2Able.Broadcast(true);
@@ -61,31 +62,6 @@ void USkillComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	{
 		UpdateSkill2Able.Broadcast(false);
 	}
-	/*for(int i = 0;i<SkillList.Num();i++)
-	{
-		if(SkillList[i]->CommitSkill())
-		{
-			if(i == 0)
-			{
-				UpdateSkill1Able.Broadcast(true);
-			}
-			else if(i == 1)
-			{
-				UpdateSkill2Able.Broadcast(true);
-			}
-		}
-		else
-		{
-			if (i == 0)
-			{
-				UpdateSkill1Able.Broadcast(false);
-			}
-			else if (i == 1)
-			{
-				UpdateSkill2Able.Broadcast(false);
-			}
-		}
-	}*/
 }
 
 void USkillComponent::AddSkill(USKillBase* skill)
@@ -96,6 +72,7 @@ void USkillComponent::AddSkill(USKillBase* skill)
 
 void USkillComponent::UseSkill(const FGameplayTag skillTag)
 {
+	// 스킬리스트 중에 해당 스킬태그가 있는 지 확인하고 스킬 사용
 	for(auto skill : SkillList)
 	{
 		if(skill->GetSkillInfo()->skill_Tag == skillTag)
@@ -107,11 +84,13 @@ void USkillComponent::UseSkill(const FGameplayTag skillTag)
 
 void USkillComponent::UseSkill(int32 index)
 {
+	// 스킬리스트 중에 해당 해당 인덱스 스킬 사용
 	SkillList[index]->UseSkill(GetOwner<ABaseCharacter>());
 }
 
 bool USkillComponent::IsContainSkill(const FGameplayTag skillTag)
 {
+	// 스킬리스트 중에 해당 스킬태그인 스킬이 있는 지 확인
 	for (auto skill : SkillList)
 	{
 		if (skill->GetSkillInfo()->skill_Tag == skillTag)
@@ -144,6 +123,7 @@ void USkillComponent::RemoveSkillTimer()
 
 bool USkillComponent::SkillUsable(int32 index)
 {
+	// 해당 인덱스의 스킬을 사용가능 한지 확인
 	if(SkillList.Num() > index)
 	{
 		if(SkillList[index]->CommitSkill())

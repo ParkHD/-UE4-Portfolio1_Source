@@ -8,8 +8,10 @@ void USlashSkill::ActivateSkill()
 {
 	Super::ActivateSkill();
 
+	// 스킬사용 -> 애니메이션 실행
 	float skillPlayTime = skillOwner->GetMesh()->GetAnimInstance()->Montage_Play(GetSkillInfo()->skill_Montage, skillFast,EMontagePlayReturnType::Duration);
 
+	// 애니메이션 종료 후 ActionState::NORMAL로 변경
 	FTimerHandle skillTimer;
 	FTimerDelegate skillDelegate = FTimerDelegate::CreateUObject(skillOwner, &ABaseCharacter::SetActionState, EActionState::NORMAL);
 	skillOwner->GetWorld()->GetTimerManager().SetTimer(

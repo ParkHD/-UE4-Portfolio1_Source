@@ -30,6 +30,7 @@ EBTNodeResult::Type UTask_FlyMove::AbortTask(UBehaviorTreeComponent& OwnerComp, 
 		{
 			ABaseCharacter* target = Cast<ABaseCharacter>(controller->GetBlackboardComponent()->GetValueAsObject(GetSelectedBlackboardKey()));
 
+			// 속도를 멈춘다
 			if (target != nullptr)
 			{
 				target->GetCharacterMovement()->Velocity = FVector::ZeroVector;
@@ -49,7 +50,7 @@ void UTask_FlyMove::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 		if (owner != nullptr)
 		{
 			ABaseCharacter* target = Cast<ABaseCharacter>(controller->GetBlackboardComponent()->GetValueAsObject(GetSelectedBlackboardKey()));
-
+			// 속도를 멈춘다
 			if (target != nullptr)
 			{
 				target->GetCharacterMovement()->Velocity = FVector::ZeroVector;
@@ -79,15 +80,20 @@ void UTask_FlyMove::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 
 			if (target != nullptr)
 			{
+				// 타겟과의 거리를 구하고 입력한 수치보다 크다면 타겟방향으로 이동
 				float distance = owner->GetDistanceTo(target);
 				if (distance > accessRange)
 				{
+					// 타겟 방향 구하고 이동
 					FVector dir = (target->GetActorLocation() - owner->GetActorLocation()).GetUnsafeNormal();
 					dir.Z = 0.f; // z축은 고정해서 공중에 있도록
 					owner->GetCharacterMovement()->Velocity = dir * moveSpeed;
+
+					// 타겟 방향을 바라보기
 					FRotator lookAt = FMath::RInterpTo(owner->GetActorRotation(), dir.Rotation(), DeltaSeconds, turnSpeed);
 					owner->SetActorRotation(lookAt);
 				}
+				// 타겟과의 거리가 입력한 수치 이하라면 속도를 줄이고 일정 속도 이하가 되면 Task종료한다.
 				else
 				{
 					FVector velocity = FMath::VInterpTo(owner->GetCharacterMovement()->Velocity, FVector::ZeroVector, DeltaSeconds, breakValue);

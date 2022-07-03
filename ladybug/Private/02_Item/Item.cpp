@@ -36,6 +36,7 @@ bool UItem::MergeItem(UItem* target)
 
 void UItem::UseItem(class APlayerCharacter* player)
 {
+	// 아이템 사용하면 개수 차감
 	if (itemCount > 0)
 	{
 		itemCount--;
@@ -43,6 +44,7 @@ void UItem::UseItem(class APlayerCharacter* player)
 }
 void UItem::UseItem(class AWorldPlayerCharacter* player)
 {
+	// 아이템 사용하면 개수 차감
 	if (itemCount > 0)
 	{
 		itemCount--;

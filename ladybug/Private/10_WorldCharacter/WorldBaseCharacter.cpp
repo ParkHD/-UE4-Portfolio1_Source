@@ -31,6 +31,8 @@ void AWorldBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// 테스트 용도
+	// 에디터에서 부대원 받아서 부대에 추가
 	if (Cast<UmyGameInstance>(GetGameInstance())->GetMonsterData().Num() == 0)
 	{
 		for (TSubclassOf<class UMonster> unit : ArmyListBP)

@@ -7,7 +7,7 @@
 #include "Decorator_CheckStamina.generated.h"
 
 /**
- * 
+ * 스태미너가 충분히 있는지 확인
  */
 UCLASS()
 class LADYBUG_API UDecorator_CheckStamina : public UBTDecorator

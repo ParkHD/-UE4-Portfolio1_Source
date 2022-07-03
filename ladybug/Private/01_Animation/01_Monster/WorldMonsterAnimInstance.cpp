@@ -15,6 +15,7 @@ void UWorldMonsterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
+	// 변수 업데이트
 	if (owner != nullptr)
 	{
 		Speed = owner->GetCharacterMovement()->Velocity.Size();

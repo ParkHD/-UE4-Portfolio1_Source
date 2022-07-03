@@ -9,6 +9,7 @@ void UNotify_EndAttack::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
 {
 	Super::Notify(MeshComp, Animation);
 
+	// ActionState ÃÊ±âÈ­
 	auto owner = MeshComp->GetOwner<ABaseCharacter>();
 	if(owner != nullptr)
 	{

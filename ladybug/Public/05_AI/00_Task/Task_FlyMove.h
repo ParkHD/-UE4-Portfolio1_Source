@@ -7,7 +7,8 @@
 #include "Task_FlyMove.generated.h"
 
 /**
- * 
+ * 날아가며 이동하는 Task
+ * 아직 미완성!! -> 공중에서 장애물 만나면 돌아가게 해야함
  */
 UCLASS()
 class LADYBUG_API UTask_FlyMove : public UBTTask_BlackboardBase

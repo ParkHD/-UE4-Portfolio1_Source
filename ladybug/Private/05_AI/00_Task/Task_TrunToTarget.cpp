@@ -36,13 +36,14 @@ void UTask_TrunToTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 
 	if (isTick)
 	{
+		// 타겟과의 각도 구하기
 		FRotator lookAtRotation = owner->GetActorRotation();
 		lookAtRotation.Yaw = (target->GetActorLocation() - owner->GetActorLocation()).Rotation().Yaw;
-
 		float angle = owner->GetActorRotation().Yaw - lookAtRotation.Yaw;
-
+		
 		if (!isInPlace)
 		{
+			// 각도가 오차범위 안에 있으면 Task종료
 			if (FMath::Abs(angle) <= allowableAngle)
 			{
 				owner->GetMesh()->GetAnimInstance()->StopAllMontages(0.1f);
@@ -50,9 +51,11 @@ void UTask_TrunToTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 			}
 		}
 
+		// 타겟과의 각도를 이용해 회전값을 구하고 타겟방향으로 회전
 		auto interpRot = FMath::RInterpTo(owner->GetActorRotation(), lookAtRotation, DeltaSeconds, lerpSpeed);
 		owner->SetActorRotation(interpRot);
 
+		// 각도가 오차범위 안에 있으면 Task종료
 		if (FMath::Abs(angle) <= allowableAngle)
 		{
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
@@ -81,10 +84,12 @@ void UTask_TrunToTarget::Turn()
 		angle = angle + 360.f;
 	}
 
+	// 재귀방식으로 Turn함수 실행
 	FTimerDelegate TurnTimerDel = FTimerDelegate::CreateUObject(
 		this,
 		&UTask_TrunToTarget::Turn);
 
+	// 각도가 아직 많이 차이나면 몽타주 실행 후에 다시 Turn함수 실행
 	if (angle >= angleForPlayMontage)
 	{
 		float time = owner->GetMesh()->GetAnimInstance()->Montage_Play(rightTurnAnim, 1.f, EMontagePlayReturnType::Duration);
@@ -97,10 +102,10 @@ void UTask_TrunToTarget::Turn()
 			false
 		);
 	}
+	// 각도가 아직 많이 차이나면 몽타주 실행 후에 다시 Turn함수 실행
 	else if (angle <= -angleForPlayMontage)
 	{
 		float time = owner->GetMesh()->GetAnimInstance()->Montage_Play(leftTurnAnim, 1.f, EMontagePlayReturnType::Duration);
-
 		//타이머정보 저장댐
 		FTimerHandle TurnTimerHandle;
 		owner->GetWorldTimerManager().SetTimer(
@@ -110,6 +115,7 @@ void UTask_TrunToTarget::Turn()
 			false
 		);
 	}
+	// 각도차이가 오차 범위 내면 Tick함수 실행
 	else
 	{
 		isTick = true;

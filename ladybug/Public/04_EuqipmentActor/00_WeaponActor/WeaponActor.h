@@ -6,9 +6,7 @@
 #include "04_EuqipmentActor/EquipmentActor.h"
 #include "WeaponActor.generated.h"
 
-/**
- * 
- */
+// 무기Actor
 UCLASS()
 class LADYBUG_API AWeaponActor : public AEquipmentActor
 {
@@ -17,7 +15,7 @@ class LADYBUG_API AWeaponActor : public AEquipmentActor
 protected:
 	virtual void PostInitializeComponents()override;
 public:
+	// 무기 콜리전 반응 -> 상대 대미지 주기
 	UFUNCTION()
-	void OnActorBeginOverlapEvent(AActor* OverlappedActor, AActor* OtherActor);
-
+		void OnActorBeginOverlapEvent(AActor* OverlappedActor, AActor* OtherActor);
 };

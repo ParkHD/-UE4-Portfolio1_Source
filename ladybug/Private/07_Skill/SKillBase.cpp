@@ -11,6 +11,7 @@ bool USKillBase::CommitSkill()
 {
 	if (skillOwner != nullptr)
 	{
+		// 스킬이 cooltime이 아닌지 확인
 		auto cooleffect = coolTimeEffect.GetDefaultObject();
 		if (cooleffect != nullptr)
 		{
@@ -20,9 +21,8 @@ bool USKillBase::CommitSkill()
 			}
 		}
 		
-		
+		// 충분한 Cost가 있는지 확인
 		auto costeffect = costEffect.GetDefaultObject();
-		
 		if (costeffect != nullptr)
 		{
 			if (!costeffect->CheckEffectValue(skillOwner))
@@ -58,8 +58,10 @@ void USKillBase::UseSkill(class ABaseCharacter* caller)
 {
 	skillOwner = caller;
 
+	// 스킬을 사용할 수 있는 상태인지 확인
 	if (CommitSkill())
 	{
+		// 스킬 쿨타임 및 cost 적용
 		if (skillOwner != nullptr && coolTimeEffect != nullptr)
 		{
 			const auto coolEffect = coolTimeEffect.GetDefaultObject();
@@ -70,8 +72,15 @@ void USKillBase::UseSkill(class ABaseCharacter* caller)
 			const auto costeffect = costEffect.GetDefaultObject();
 			costeffect->ApplyEffect(skillOwner);
 		}
+		if (skillOwner != nullptr && buffEffect != nullptr)
+		{
+			const auto buff = buffEffect.GetDefaultObject();
+			buff->ApplyEffect(skillOwner);
+		}
+		// 스킬 실행
 		ActivateSkill();
 	}
+	// 스킬 종료
 	EndSkill();
 }
 
@@ -88,6 +97,7 @@ void USKillBase::RemoveTimer()
 {
 	if(coolTimeEffect != nullptr && skillOwner != nullptr)
 	{
+		// 쿨타입 타이머 제거
 		coolTimeEffect.GetDefaultObject()->RemoveTimer(skillOwner);
 	}
 }

@@ -14,6 +14,7 @@ void UInventoryButtonShadowWidget::NativeConstruct()
 
 void UInventoryButtonShadowWidget::SetUp()
 {
+	// 참조하는 위젯의 정보를 가져와서 SetUp하고 투명도를 설정
 	UInventoryButtonWidget* owner = Cast<UInventoryButtonWidget>(widgetRef);
 
 	TextBlock_ItemCount->SetText(owner->GetItemCountTextBlock());
